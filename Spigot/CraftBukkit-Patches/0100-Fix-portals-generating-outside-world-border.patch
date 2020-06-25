@@ -1,0 +1,45 @@
+From 58088e5e399c9e432e8db4ba4dac63045ef90a3a Mon Sep 17 00:00:00 2001
+From: md_5 <git@md-5.net>
+Date: Wed, 22 Apr 2020 12:04:34 +1000
+Subject: [PATCH] Fix portals generating outside world border
+
+See SPIGOT-5677, MC-11479
+
+diff --git a/src/main/java/net/minecraft/server/Entity.java b/src/main/java/net/minecraft/server/Entity.java
+index afbee5b8f..390dafff9 100644
+--- a/src/main/java/net/minecraft/server/Entity.java
++++ b/src/main/java/net/minecraft/server/Entity.java
+@@ -2418,8 +2418,10 @@ public abstract class Entity implements INamableTileEntity, ICommandListener {
+                     d1 *= 8.0D;
+                 }
+ 
+-                double d3 = Math.min(-2.9999872E7D, worldserver.getWorldBorder().e() + 16.0D);
+-                double d4 = Math.min(-2.9999872E7D, worldserver.getWorldBorder().f() + 16.0D);
++                // Spigot start - SPIGOT-5677, MC-114796: Fix portals generating outside world border
++                double d3 = Math.max(-2.9999872E7D, worldserver.getWorldBorder().e() + 16.0D);
++                double d4 = Math.max(-2.9999872E7D, worldserver.getWorldBorder().f() + 16.0D);
++                // Spigot end
+                 double d5 = Math.min(2.9999872E7D, worldserver.getWorldBorder().g() - 16.0D);
+                 double d6 = Math.min(2.9999872E7D, worldserver.getWorldBorder().h() - 16.0D);
+ 
+diff --git a/src/main/java/net/minecraft/server/EntityPlayer.java b/src/main/java/net/minecraft/server/EntityPlayer.java
+index 63ee8becf..3f4453bbf 100644
+--- a/src/main/java/net/minecraft/server/EntityPlayer.java
++++ b/src/main/java/net/minecraft/server/EntityPlayer.java
+@@ -825,9 +825,11 @@ public class EntityPlayer extends EntityHuman implements ICrafting {
+             // this.setPositionRotation(d0, d1, d2, f1, f); // CraftBukkit - PlayerTeleportEvent handles position changes
+             worldserver1.getMethodProfiler().exit();
+             worldserver1.getMethodProfiler().enter("placing");
+-            double d4 = Math.min(-2.9999872E7D, worldserver.getWorldBorder().e() + 16.0D);
++            // Spigot start - SPIGOT-5677, MC-114796: Fix portals generating outside world border
++            double d4 = Math.max(-2.9999872E7D, worldserver.getWorldBorder().e() + 16.0D);
+ 
+-            d3 = Math.min(-2.9999872E7D, worldserver.getWorldBorder().f() + 16.0D);
++            d3 = Math.max(-2.9999872E7D, worldserver.getWorldBorder().f() + 16.0D);
++            // Spigot end
+             double d5 = Math.min(2.9999872E7D, worldserver.getWorldBorder().g() - 16.0D);
+             double d6 = Math.min(2.9999872E7D, worldserver.getWorldBorder().h() - 16.0D);
+ 
+-- 
+2.25.1
+

@@ -1,0 +1,30 @@
+From 2e1198bbb63dc347973d58b1751cb49702e8fc45 Mon Sep 17 00:00:00 2001
+From: Thinkofdeath <thinkofdeath@spigotmc.org>
+Date: Sat, 19 Jul 2014 19:54:41 +0100
+Subject: [PATCH] Prevent a crash involving attributes
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
+index 9c27f333c..00e19649e 100644
+--- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
++++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
+@@ -1526,7 +1526,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+         }
+         for (AttributeModifiable genericInstance : collection) {
+             if (genericInstance.getAttribute() == GenericAttributes.MAX_HEALTH) {
+-                genericInstance.setValue(scaledHealth ? healthScale : getMaxHealth());
++                // Spigot start
++                double healthMod = scaledHealth ? healthScale : getMaxHealth();
++                if ( healthMod >= Float.MAX_VALUE || healthMod <= 0 )
++                {
++                    healthMod = 20; // Reset health
++                    getServer().getLogger().warning( getName() + " tried to crash the server with a large health attribute" );
++                }
++                genericInstance.setValue(healthMod);
++                // Spigot end
+                 break;
+             }
+         }
+-- 
+2.25.1
+
