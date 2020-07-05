@@ -599,7 +599,7 @@
 +            BlockPosition blockposition = location; // CraftBukkit
  
 +        if (blockposition == null) { // CraftBukkit
-             if (this.world.getDimensionKey() == World.THE_END && worldserver.getDimensionKey() == World.OVERWORLD) {
+             if (this.world.func_234923_W_() == World.THE_END && worldserver.func_234923_W_() == World.OVERWORLD) {
 -                blockposition = worldserver.getHighestBlockYAt(HeightMap.Type.MOTION_BLOCKING_NO_LEAVES, worldserver.getSpawn());
 +                // CraftBukkit start
 +                EntityPortalEvent event = CraftEventFactory.callEntityPortalEvent(this, worldserver, worldserver.getHighestBlockYAt(HeightMap.Type.MOTION_BLOCKING_NO_LEAVES, worldserver.getSpawn()), 0);
@@ -609,7 +609,7 @@
 +                worldserver = ((CraftWorld) event.getTo().getWorld()).getHandle();
 +                blockposition = new BlockPosition(event.getTo().getX(), event.getTo().getY(), event.getTo().getZ());
 +                // CraftBukkit end
-             } else if (worldserver.getDimensionKey() == World.THE_END) {
+             } else if (worldserver.func_234923_W_() == World.THE_END) {
 -                blockposition = WorldServer.a;
 +                // CraftBukkit start
 +                EntityPortalEvent event = CraftEventFactory.callEntityPortalEvent(this, worldserver, WorldServer.a, 0);
@@ -655,7 +655,7 @@
 @@ -2043,8 +2424,16 @@
                  entity.setMot(vec3d);
                  worldserver.addEntityTeleport(entity);
-                 if (worldserver.getDimensionKey() == World.THE_END) {
+                 if (worldserver.func_234923_W_() == World.THE_END) {
 -                    WorldServer.a(worldserver);
 +                    WorldServer.a(worldserver, this); // CraftBukkit
 +                }

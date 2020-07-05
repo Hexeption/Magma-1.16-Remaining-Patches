@@ -219,7 +219,7 @@ public class CraftEventFactory {
     private static boolean canBuild(WorldServer world, Player player, int x, int z) {
         int spawnSize = Bukkit.getServer().getSpawnRadius();
 
-        if (world.getDimensionKey() != World.OVERWORLD) return true;
+        if (world.func_234923_W_() != World.OVERWORLD) return true;
         if (spawnSize <= 0) return true;
         if (((CraftServer) Bukkit.getServer()).getHandle().getOPs().isEmpty()) return true;
         if (player.isOp()) return true;

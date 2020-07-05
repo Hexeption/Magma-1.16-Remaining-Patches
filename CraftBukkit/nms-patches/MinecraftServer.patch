@@ -285,7 +285,7 @@
 +            this.initWorld(world, worlddata, saveData, worlddata.getGeneratorSettings());
 +            this.server.getPluginManager().callEvent(new org.bukkit.event.world.WorldInitEvent(world.getWorld()));
 +
-+            this.worldServer.put(world.getDimensionKey(), world);
++            this.worldServer.put(world.func_234923_W_(), world);
 +            this.getPlayerList().setPlayerFileData(world);
  
 -        this.a(worldloadlistener);
@@ -430,7 +430,7 @@
 +        this.forceTicks = true;
 +        // CraftBukkit end
  
-         MinecraftServer.LOGGER.info("Preparing start region for dimension {}", worldserver.getDimensionKey().a());
+         MinecraftServer.LOGGER.info("Preparing start region for dimension {}", worldserver.func_234923_W_().a());
          BlockPosition blockposition = worldserver.getSpawn();
 @@ -397,17 +585,21 @@
          chunkproviderserver.addTicket(TicketType.START, new ChunkCoordIntPair(blockposition), 11, Unit.INSTANCE);
@@ -623,12 +623,12 @@
              WorldServer worldserver = (WorldServer) iterator.next();
  
              this.methodProfiler.a(() -> {
-                 return worldserver + " " + worldserver.getDimensionKey().a();
+                 return worldserver + " " + worldserver.func_234923_W_().a();
              });
 +            /* Drop global time updates
              if (this.ticks % 20 == 0) {
                  this.methodProfiler.enter("timeSync");
-                 this.playerList.a((Packet) (new PacketPlayOutUpdateTime(worldserver.getTime(), worldserver.getDayTime(), worldserver.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE))), worldserver.getDimensionKey());
+                 this.playerList.a((Packet) (new PacketPlayOutUpdateTime(worldserver.getTime(), worldserver.getDayTime(), worldserver.getGameRules().getBoolean(GameRules.DO_DAYLIGHT_CYCLE))), worldserver.func_234923_W_());
                  this.methodProfiler.exit();
              }
 +            // CraftBukkit end */

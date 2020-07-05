@@ -119,7 +119,7 @@
 +        String spawnWorld = nbttagcompound.getString("SpawnWorld");
 +        CraftWorld oldWorld = (CraftWorld) Bukkit.getWorld(spawnWorld);
 +        if (oldWorld != null) {
-+            this.spawnDimension = oldWorld.getHandle().getDimensionKey();
++            this.spawnDimension = oldWorld.getHandle().func_234923_W_();
 +        }
 +        // CraftBukkit end
 +
@@ -372,9 +372,9 @@
 +        if (this.isSleeping()) return this; // CraftBukkit - SPIGOT-3154
 +        // this.worldChangeInvuln = true; // CraftBukkit - Moved down and into PlayerList#changeDimension
          WorldServer worldserver1 = this.getWorldServer();
-         ResourceKey<World> resourcekey = worldserver1.getDimensionKey();
+         ResourceKey<World> resourcekey = worldserver1.func_234923_W_();
  
-         if (resourcekey == World.THE_END && worldserver.getDimensionKey() == World.OVERWORLD) {
+         if (resourcekey == World.THE_END && worldserver.func_234923_W_() == World.OVERWORLD) {
 +            this.worldChangeInvuln = true; // CraftBukkit - Moved down from above
              this.decouple();
              this.getWorldServer().removePlayer(this);
@@ -387,7 +387,7 @@
 +            /*
              WorldData worlddata = worldserver.getWorldData();
  
-             this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.getTypeKey(), worldserver.getDimensionKey(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
+             this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.getTypeKey(), worldserver.func_234923_W_(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
 @@ -557,6 +765,8 @@
              playerlist.d(this);
              worldserver1.removePlayer(this);
@@ -434,7 +434,7 @@
 +            // CraftBukkit start - PlayerPortalEvent implementation
 +            Vec3D exitVelocity = Vec3D.a;
 +            BlockPosition exitPosition = new BlockPosition(d0, d1, d2);
-             if (worldserver.getDimensionKey() == World.THE_END) {
+             if (worldserver.func_234923_W_() == World.THE_END) {
 -                int i = MathHelper.floor(this.locX());
 -                int j = MathHelper.floor(this.locY()) - 1;
 -                int k = MathHelper.floor(this.locZ());
@@ -493,7 +493,7 @@
 +            worldserver = ((CraftWorld) exit.getWorld()).getHandle();
 +            this.worldChangeInvuln = true; // CraftBukkit - Set teleport invulnerability only if player changing worlds
 +
-+            this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.getTypeKey(), worldserver.getDimensionKey(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
++            this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.getTypeKey(), worldserver.func_234923_W_(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
 +            this.playerConnection.sendPacket(new PacketPlayOutServerDifficulty(this.world.getDifficulty(), this.world.getWorldData().isDifficultyLocked()));
 +            PlayerList playerlist = this.server.getPlayerList();
 +

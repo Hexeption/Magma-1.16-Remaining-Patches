@@ -745,7 +745,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         if (location == null) {
             getHandle().setRespawnPosition(null, null, override, false);
         } else {
-            getHandle().setRespawnPosition(((CraftWorld) location.getWorld()).getHandle().getDimensionKey(), new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()), override, false);
+            getHandle().setRespawnPosition(((CraftWorld) location.getWorld()).getHandle().func_234923_W_(), new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()), override, false);
         }
     }
 

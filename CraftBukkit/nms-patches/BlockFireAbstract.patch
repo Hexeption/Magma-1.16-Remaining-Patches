@@ -20,7 +20,7 @@
      @Override
      public void onPlace(IBlockData iblockdata, World world, BlockPosition blockposition, IBlockData iblockdata1, boolean flag) {
          if (!iblockdata1.a(iblockdata.getBlock())) {
--            if (world.getDimensionKey() != World.OVERWORLD && world.getDimensionKey() != World.THE_NETHER || !BlockPortal.a((GeneratorAccess) world, blockposition)) {
+-            if (world.func_234923_W_() != World.OVERWORLD && world.func_234923_W_() != World.THE_NETHER || !BlockPortal.a((GeneratorAccess) world, blockposition)) {
 +            // CraftBukkit - getTypeKey()
 +            if (world.getTypeKey()!= DimensionManager.OVERWORLD && world.getTypeKey()!= DimensionManager.THE_NETHER || !BlockPortal.a((GeneratorAccess) world, blockposition)) {
                  if (!iblockdata.canPlace(world, blockposition)) {

@@ -1027,7 +1027,7 @@ public final class CraftServer implements Server {
         console.initWorld(internal, worlddata, worlddata, worlddata.getGeneratorSettings());
 
         internal.setSpawnFlags(true, true);
-        console.worldServer.put(internal.getDimensionKey(), internal);
+        console.worldServer.put(internal.func_234923_W_(), internal);
 
         pluginManager.callEvent(new WorldInitEvent(internal.getWorld()));
 
@@ -1050,11 +1050,11 @@ public final class CraftServer implements Server {
 
         WorldServer handle = ((CraftWorld) world).getHandle();
 
-        if (!(console.worldServer.containsKey(handle.getDimensionKey()))) {
+        if (!(console.worldServer.containsKey(handle.func_234923_W_()))) {
             return false;
         }
 
-        if (handle.getDimensionKey() == net.minecraft.server.World.OVERWORLD) {
+        if (handle.func_234923_W_() == net.minecraft.server.World.OVERWORLD) {
             return false;
         }
 
@@ -1080,7 +1080,7 @@ public final class CraftServer implements Server {
         }
 
         worlds.remove(world.getName().toLowerCase(java.util.Locale.ENGLISH));
-        console.worldServer.remove(handle.getDimensionKey());
+        console.worldServer.remove(handle.func_234923_W_());
         return true;
     }
 
