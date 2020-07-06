@@ -185,26 +185,6 @@
          }
      }
  
-     public void setOnFire(int i) {
-+        // CraftBukkit start
-+        this.setOnFire(i, true);
-+    }
-+
-+    public void setOnFire(int i, boolean callEvent) {
-+        if (callEvent) {
-+            EntityCombustEvent event = new EntityCombustEvent(this.getBukkitEntity(), i);
-+            this.world.getServer().getPluginManager().callEvent(event);
-+
-+            if (event.isCancelled()) {
-+                return;
-+            }
-+
-+            i = event.getDuration();
-+        }
-+        // CraftBukkit end
-         int j = i * 20;
- 
-         if (this instanceof EntityLiving) {
 @@ -424,6 +562,28 @@
                  block.a((IBlockAccess) this.world, this);
              }

@@ -358,27 +358,6 @@
 +        return this.world.pvpMode;
      }
  
-     @Nullable
-     @Override
-     public Entity a(WorldServer worldserver) {
--        this.worldChangeInvuln = true;
-+        // CraftBukkit start
-+        return a(worldserver, TeleportCause.UNKNOWN);
-+    }
-+
-+    @Nullable
-+    public Entity a(WorldServer worldserver, PlayerTeleportEvent.TeleportCause cause) {
-+        // CraftBukkit end
-+        if (this.isSleeping()) return this; // CraftBukkit - SPIGOT-3154
-+        // this.worldChangeInvuln = true; // CraftBukkit - Moved down and into PlayerList#changeDimension
-         WorldServer worldserver1 = this.getWorldServer();
-         ResourceKey<World> resourcekey = worldserver1.func_234923_W_();
- 
-         if (resourcekey == World.THE_END && worldserver.func_234923_W_() == World.OVERWORLD) {
-+            this.worldChangeInvuln = true; // CraftBukkit - Moved down from above
-             this.decouple();
-             this.getWorldServer().removePlayer(this);
-             if (!this.viewingCredits) {
 @@ -548,6 +754,8 @@
  
              return this;
@@ -387,7 +366,7 @@
 +            /*
              WorldData worlddata = worldserver.getWorldData();
  
-             this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.getTypeKey(), worldserver.func_234923_W_(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
+             this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.func_234922_V_(), worldserver.func_234923_W_(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
 @@ -557,6 +765,8 @@
              playerlist.d(this);
              worldserver1.removePlayer(this);
@@ -493,7 +472,7 @@
 +            worldserver = ((CraftWorld) exit.getWorld()).getHandle();
 +            this.worldChangeInvuln = true; // CraftBukkit - Set teleport invulnerability only if player changing worlds
 +
-+            this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.getTypeKey(), worldserver.func_234923_W_(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
++            this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.func_234922_V_(), worldserver.func_234923_W_(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
 +            this.playerConnection.sendPacket(new PacketPlayOutServerDifficulty(this.world.getDifficulty(), this.world.getWorldData().isDifficultyLocked()));
 +            PlayerList playerlist = this.server.getPlayerList();
 +
