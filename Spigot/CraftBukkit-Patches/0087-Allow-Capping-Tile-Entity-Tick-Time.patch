@@ -1,4 +1,4 @@
-From 7380eac07dfb5f948fcc7ec833550b079f762f20 Mon Sep 17 00:00:00 2001
+From 7bce4973b4aea236325919a935e8b114788de448 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Fri, 20 Feb 2015 21:39:31 +1100
 Subject: [PATCH] Allow Capping (Tile)Entity Tick Time.
@@ -10,10 +10,10 @@ For tiles there is very little tradeoff for this option, as tile ticks are based
 This feature was commisioned by Chunkr.
 
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index b0168f2ed..74ad13257 100644
+index f2b577830..ad7acac0a 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -78,6 +78,9 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -79,6 +79,9 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
  
      public final SpigotTimings.WorldTimingsHandler timings; // Spigot
      public static BlockPosition lastPhysicsProblem; // Spigot
@@ -23,7 +23,7 @@ index b0168f2ed..74ad13257 100644
  
      public CraftWorld getWorld() {
          return this.world;
-@@ -151,6 +154,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -159,6 +162,8 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
          });
          // CraftBukkit end
          timings = new SpigotTimings.WorldTimingsHandler(this); // Spigot - code below can generate new world and access timings
@@ -32,7 +32,7 @@ index b0168f2ed..74ad13257 100644
      }
  
      @Override
-@@ -641,14 +646,19 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -608,14 +613,19 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
          }
  
          this.tickingTileEntities = true;
@@ -57,7 +57,7 @@ index b0168f2ed..74ad13257 100644
                  continue;
              }
              // Spigot end
-@@ -685,7 +695,10 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -652,7 +662,10 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
              }
  
              if (tileentity.isRemoved()) {

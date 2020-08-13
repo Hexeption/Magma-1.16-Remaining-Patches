@@ -1,11 +1,11 @@
-From 45cebdc61f22f1734a5886d89b4a06ed0d31d233 Mon Sep 17 00:00:00 2001
+From e926da286c8d9272a887ff330cd44f827340316e Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Sat, 12 Apr 2014 21:23:58 +1000
 Subject: [PATCH] Treat Bungee as Online Mode
 
 
 diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index f93c04888..27e6872c6 100644
+index 533ddd725..ca95b5aba 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServer.java
 @@ -190,7 +190,14 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer

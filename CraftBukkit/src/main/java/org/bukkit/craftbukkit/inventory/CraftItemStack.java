@@ -515,6 +515,7 @@ public final class CraftItemStack extends ItemStack {
             case BELL:
             case BLAST_FURNACE:
             case CAMPFIRE:
+            case SOUL_CAMPFIRE:
             case JIGSAW:
             case LECTERN:
             case SMOKER:
@@ -527,6 +528,14 @@ public final class CraftItemStack extends ItemStack {
                 return new CraftMetaCrossbow(item.getTag());
             case SUSPICIOUS_STEW:
                 return new CraftMetaSuspiciousStew(item.getTag());
+            case COD_BUCKET:
+            case PUFFERFISH_BUCKET:
+            case SALMON_BUCKET:
+            case ITEM_FRAME:
+            case PAINTING:
+                return new CraftMetaEntityTag(item.getTag());
+            case COMPASS:
+                return new CraftMetaCompass(item.getTag());
             default:
                 return new CraftMetaItem(item.getTag());
         }

@@ -1,4 +1,4 @@
-From 6353c7c98eaa2787c8cfe0dc974de27ba02c745d Mon Sep 17 00:00:00 2001
+From 99b2a5079d2a084f76876f78fbe242c01f905046 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Sun, 13 Apr 2014 14:41:23 +1000
 Subject: [PATCH] Use Offline Player Data Once if Required.
@@ -6,10 +6,10 @@ Subject: [PATCH] Use Offline Player Data Once if Required.
 If we are online mode and the only copy of player data we can find is the player's offline mode data, we will attempt a once off conversion by reading this data and then renaming the file so it won't be used again.
 
 diff --git a/src/main/java/net/minecraft/server/WorldNBTStorage.java b/src/main/java/net/minecraft/server/WorldNBTStorage.java
-index 6afd02ad5..240f9331d 100644
+index bb9694c9e..9190e7c6d 100644
 --- a/src/main/java/net/minecraft/server/WorldNBTStorage.java
 +++ b/src/main/java/net/minecraft/server/WorldNBTStorage.java
-@@ -48,10 +48,28 @@ public class WorldNBTStorage {
+@@ -46,10 +46,28 @@ public class WorldNBTStorage {
  
          try {
              File file = new File(this.playerDir, entityhuman.getUniqueIDString() + ".dat");
@@ -27,7 +27,7 @@ index 6afd02ad5..240f9331d 100644
 +            // Spigot End
  
              if (file.exists() && file.isFile()) {
-                 nbttagcompound = NBTCompressedStreamTools.a((InputStream) (new FileInputStream(file)));
+                 nbttagcompound = NBTCompressedStreamTools.a(file);
              }
 +            // Spigot Start
 +            if ( usingWrongFile )

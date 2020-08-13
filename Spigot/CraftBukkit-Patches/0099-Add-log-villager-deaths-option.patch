@@ -1,11 +1,11 @@
-From cdacf7cc2804ddaca25a8869fe83d1621a4fb464 Mon Sep 17 00:00:00 2001
+From 73ccb09c85417d9858323776a9c14601989368ed Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Sat, 14 Dec 2019 10:26:52 +1100
 Subject: [PATCH] Add log-villager-deaths option
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityVillager.java b/src/main/java/net/minecraft/server/EntityVillager.java
-index ea38d92a6..f7f76bca2 100644
+index 57e0671c8..0182836a8 100644
 --- a/src/main/java/net/minecraft/server/EntityVillager.java
 +++ b/src/main/java/net/minecraft/server/EntityVillager.java
 @@ -551,7 +551,7 @@ public class EntityVillager extends EntityVillagerAbstract implements Reputation

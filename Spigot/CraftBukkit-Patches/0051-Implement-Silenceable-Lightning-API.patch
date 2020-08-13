@@ -1,11 +1,11 @@
-From 2dd1aa1ab4d7c557ca28b2b0978f0fa1dbaf9902 Mon Sep 17 00:00:00 2001
+From 8527aefc86de1b6a2d560d99a147a6e760a448d0 Mon Sep 17 00:00:00 2001
 From: drXor <mcyoungsota@gmail.com>
 Date: Sun, 23 Feb 2014 16:16:59 -0400
 Subject: [PATCH] Implement Silenceable Lightning API
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityLightning.java b/src/main/java/net/minecraft/server/EntityLightning.java
-index 17138e6e8..6f979e5f1 100644
+index 44cdcaba7..7d9e3b636 100644
 --- a/src/main/java/net/minecraft/server/EntityLightning.java
 +++ b/src/main/java/net/minecraft/server/EntityLightning.java
 @@ -15,6 +15,7 @@ public class EntityLightning extends Entity {
@@ -26,10 +26,10 @@ index 17138e6e8..6f979e5f1 100644
  
              if (enumdifficulty == EnumDifficulty.NORMAL || enumdifficulty == EnumDifficulty.HARD) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index f8e2d448f..e13decf74 100644
+index fe33c64a9..9e21377dc 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-@@ -2306,6 +2306,26 @@ public class CraftWorld implements World {
+@@ -2325,6 +2325,26 @@ public class CraftWorld implements World {
      // Spigot start
      private final Spigot spigot = new Spigot()
      {

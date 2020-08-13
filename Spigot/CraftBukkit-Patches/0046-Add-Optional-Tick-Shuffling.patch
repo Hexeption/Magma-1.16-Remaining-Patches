@@ -1,4 +1,4 @@
-From 0d306c5ac837516f1aaa3929554b1cbabc1b8646 Mon Sep 17 00:00:00 2001
+From c814527487e96368f1b7709db551af3af1412d61 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Mon, 27 Jan 2014 08:39:26 +1100
 Subject: [PATCH] Add Optional Tick Shuffling
@@ -6,10 +6,10 @@ Subject: [PATCH] Add Optional Tick Shuffling
 This prevents players from 'gaming' the server, and strategically relogging to increase their position in the tick order.
 
 diff --git a/src/main/java/net/minecraft/server/ServerConnection.java b/src/main/java/net/minecraft/server/ServerConnection.java
-index 84b02d7e5..2414fd143 100644
+index 79a02ca9a..3283b479d 100644
 --- a/src/main/java/net/minecraft/server/ServerConnection.java
 +++ b/src/main/java/net/minecraft/server/ServerConnection.java
-@@ -110,6 +110,13 @@ public class ServerConnection {
+@@ -112,6 +112,13 @@ public class ServerConnection {
          List list = this.connectedChannels;
  
          synchronized (this.connectedChannels) {

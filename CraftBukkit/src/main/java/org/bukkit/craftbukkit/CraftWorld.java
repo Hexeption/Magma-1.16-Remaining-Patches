@@ -72,6 +72,7 @@ import net.minecraft.server.GameRules;
 import net.minecraft.server.GroupDataEntity;
 import net.minecraft.server.IBlockData;
 import net.minecraft.server.IChunkAccess;
+import net.minecraft.server.IRegistry;
 import net.minecraft.server.MinecraftKey;
 import net.minecraft.server.MovingObjectPosition;
 import net.minecraft.server.PacketPlayOutCustomSoundEffect;
@@ -88,7 +89,6 @@ import net.minecraft.server.Ticket;
 import net.minecraft.server.TicketType;
 import net.minecraft.server.Unit;
 import net.minecraft.server.Vec3D;
-import net.minecraft.server.WorldGenerator;
 import net.minecraft.server.WorldServer;
 import org.apache.commons.lang.Validate;
 import org.bukkit.BlockChangeDelegate;
@@ -195,6 +195,7 @@ import org.bukkit.entity.Phantom;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Piglin;
+import org.bukkit.entity.PiglinBrute;
 import org.bukkit.entity.Pillager;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.PolarBear;
@@ -277,6 +278,7 @@ public class CraftWorld implements World {
     private int monsterSpawn = -1;
     private int animalSpawn = -1;
     private int waterAnimalSpawn = -1;
+    private int waterAmbientSpawn = -1;
     private int ambientSpawn = -1;
 
     private static final Random rand = new Random();
@@ -315,7 +317,7 @@ public class CraftWorld implements World {
     public boolean setSpawnLocation(int x, int y, int z) {
         try {
             Location previousLocation = getSpawnLocation();
-            world.worldData.setSpawn(new BlockPosition(x, y, z));
+            world.worldData.setSpawn(new BlockPosition(x, y, z), 0.0F);
 
             // Notify anyone who's listening.
             SpawnChangeEvent event = new SpawnChangeEvent(this, previousLocation);
@@ -662,80 +664,69 @@ public class CraftWorld implements World {
     public boolean generateTree(Location loc, TreeType type) {
         BlockPosition pos = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
-        net.minecraft.server.WorldGenerator gen;
-        net.minecraft.server.WorldGenFeatureConfiguration conf;
+        net.minecraft.server.WorldGenFeatureConfigured gen;
         switch (type) {
         case BIG_TREE:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.FANCY_TREE;
+            gen = BiomeDecoratorGroups.FANCY_OAK;
             break;
         case BIRCH:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.BIRCH_TREE;
+            gen = BiomeDecoratorGroups.BIRCH;
             break;
         case REDWOOD:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.SPRUCE_TREE;
+            gen = BiomeDecoratorGroups.SPRUCE;
             break;
         case TALL_REDWOOD:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.PINE_TREE;
+            gen = BiomeDecoratorGroups.PINE;
             break;
         case JUNGLE:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.MEGA_JUNGLE_TREE;
+            gen = BiomeDecoratorGroups.MEGA_JUNGLE_TREE;
             break;
         case SMALL_JUNGLE:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.JUNGLE_TREE_NOVINE;
+            gen = BiomeDecoratorGroups.JUNGLE_TREE_NO_VINE;
             break;
         case COCOA_TREE:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.JUNGLE_TREE;
+            gen = BiomeDecoratorGroups.JUNGLE_TREE;
             break;
         case JUNGLE_BUSH:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.JUNGLE_BUSH;
+            gen = BiomeDecoratorGroups.JUNGLE_BUSH;
             break;
         case RED_MUSHROOM:
-            gen = WorldGenerator.HUGE_RED_MUSHROOM;
-            conf = BiomeDecoratorGroups.HUGE_RED_MUSHROOM;
+            gen = BiomeDecoratorGroups.HUGE_RED_MUSHROOM;
             break;
         case BROWN_MUSHROOM:
-            gen = WorldGenerator.HUGE_BROWN_MUSHROOM;
-            conf = BiomeDecoratorGroups.HUGE_BROWN_MUSHROOM;
+            gen = BiomeDecoratorGroups.HUGE_BROWN_MUSHROOM;
             break;
         case SWAMP:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.SWAMP_TREE;
+            gen = BiomeDecoratorGroups.SWAMP_TREE;
             break;
         case ACACIA:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.ACACIA_TREE;
+            gen = BiomeDecoratorGroups.ACACIA;
             break;
         case DARK_OAK:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.DARK_OAK_TREE;
+            gen = BiomeDecoratorGroups.DARK_OAK;
             break;
         case MEGA_REDWOOD:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.MEGA_PINE_TREE;
+            gen = BiomeDecoratorGroups.MEGA_PINE;
             break;
         case TALL_BIRCH:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.TALL_BIRCH_TREE_BEES_0002;
+            gen = BiomeDecoratorGroups.SUPER_BIRCH_BEES_0002;
             break;
         case CHORUS_PLANT:
             ((BlockChorusFlower) Blocks.CHORUS_FLOWER).a(world, pos, rand, 8);
             return true;
+        case CRIMSON_FUNGUS:
+            gen = BiomeDecoratorGroups.CRIMSON_FUNGI;
+            break;
+        case WARPED_FUNGUS:
+            gen = BiomeDecoratorGroups.WARPED_FUNGI;
+            break;
         case TREE:
         default:
-            gen = WorldGenerator.TREE;
-            conf = BiomeDecoratorGroups.NORMAL_TREE;
+            gen = BiomeDecoratorGroups.OAK;
             break;
         }
 
-        return gen.generate(world, world.getStructureManager(), world.getChunkProvider().getChunkGenerator(), rand, pos, conf);
+        return gen.e.generate(world, world.getChunkProvider().getChunkGenerator(), rand, pos, gen.f);
     }
 
     @Override
@@ -752,7 +743,7 @@ public class CraftWorld implements World {
                 int flag = ((CraftBlockState) blockstate).getFlag();
                 delegate.setBlockData(blockstate.getX(), blockstate.getY(), blockstate.getZ(), blockstate.getBlockData());
                 net.minecraft.server.IBlockData newBlock = world.getType(position);
-                world.notifyAndUpdatePhysics(position, null, oldBlock, newBlock, newBlock, flag);
+                world.notifyAndUpdatePhysics(position, null, oldBlock, newBlock, newBlock, flag, 512);
             }
             world.capturedBlockStates.clear();
             return true;
@@ -927,7 +918,7 @@ public class CraftWorld implements World {
 
     @Override
     public Biome getBiome(int x, int y, int z) {
-        return CraftBlock.biomeBaseToBiome(this.world.getBiome(x >> 2, y >> 2, z >> 2));
+        return CraftBlock.biomeBaseToBiome(getHandle().r().b(IRegistry.ay), this.world.getBiome(x >> 2, y >> 2, z >> 2));
     }
 
     @Override
@@ -939,7 +930,7 @@ public class CraftWorld implements World {
 
     @Override
     public void setBiome(int x, int y, int z, Biome bio) {
-        BiomeBase bb = CraftBlock.biomeToBiomeBase(bio);
+        BiomeBase bb = CraftBlock.biomeToBiomeBase(getHandle().r().b(IRegistry.ay), bio);
         BlockPosition pos = new BlockPosition(x, 0, z);
         if (this.world.isLoaded(pos)) {
             net.minecraft.server.Chunk chunk = this.world.getChunkAtWorldCoords(pos);
@@ -1690,6 +1681,8 @@ public class CraftWorld implements World {
                 entity = EntityTypes.HOGLIN.a(world);
             } else if (Piglin.class.isAssignableFrom(clazz)) {
                 entity = EntityTypes.PIGLIN.a(world);
+            } else if (PiglinBrute.class.isAssignableFrom(clazz)) {
+                entity = EntityTypes.PIGLIN_BRUTE.a(world);
             } else if (Strider.class.isAssignableFrom(clazz)) {
                 entity = EntityTypes.STRIDER.a(world);
             } else if (Zoglin.class.isAssignableFrom(clazz)) {
@@ -1871,7 +1864,7 @@ public class CraftWorld implements World {
 
     @Override
     public File getWorldFolder() {
-        return world.convertable.getWorldFolder(SavedFile.ROOT).toFile();
+        return world.convertable.getWorldFolder(SavedFile.ROOT).toFile().getParentFile();
     }
 
     @Override
@@ -1911,7 +1904,7 @@ public class CraftWorld implements World {
 
     @Override
     public void setHardcore(boolean hardcore) {
-        world.worldDataServer.b.hardcore = true;
+        world.worldDataServer.b.hardcore = hardcore;
     }
 
     @Override
@@ -1942,6 +1935,16 @@ public class CraftWorld implements World {
     @Override
     public void setTicksPerWaterSpawns(int ticksPerWaterSpawns) {
         world.ticksPerWaterSpawns = ticksPerWaterSpawns;
+    }
+
+    @Override
+    public long getTicksPerWaterAmbientSpawns() {
+        return world.ticksPerWaterAmbientSpawns;
+    }
+
+    @Override
+    public void setTicksPerWaterAmbientSpawns(int ticksPerWaterAmbientSpawns) {
+        world.ticksPerWaterAmbientSpawns = ticksPerWaterAmbientSpawns;
     }
 
     @Override
@@ -2017,6 +2020,20 @@ public class CraftWorld implements World {
     }
 
     @Override
+    public int getWaterAmbientSpawnLimit() {
+        if (waterAmbientSpawn < 0) {
+            return server.getWaterAmbientSpawnLimit();
+        }
+
+        return waterAmbientSpawn;
+    }
+
+    @Override
+    public void setWaterAmbientSpawnLimit(int limit) {
+        waterAmbientSpawn = limit;
+    }
+
+    @Override
     public int getAmbientSpawnLimit() {
         if (ambientSpawn < 0) {
             return server.getAmbientSpawnLimit();
@@ -2060,7 +2077,7 @@ public class CraftWorld implements World {
         double z = loc.getZ();
 
         PacketPlayOutCustomSoundEffect packet = new PacketPlayOutCustomSoundEffect(new MinecraftKey(sound), SoundCategory.valueOf(category.name()), new Vec3D(x, y, z), volume, pitch);
-        world.getMinecraftServer().getPlayerList().sendPacketNearby(null, x, y, z, volume > 1.0F ? 16.0F * volume : 16.0D, this.world.func_234923_W_(), packet);
+        world.getMinecraftServer().getPlayerList().sendPacketNearby(null, x, y, z, volume > 1.0F ? 16.0F * volume : 16.0D, this.world.getDimensionKey(), packet);
     }
 
     private static Map<String, GameRules.GameRuleKey<?>> gamerules;

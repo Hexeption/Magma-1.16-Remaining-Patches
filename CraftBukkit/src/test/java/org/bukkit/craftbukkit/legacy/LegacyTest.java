@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.material.MaterialData;
 import org.bukkit.support.AbstractTestingBase;
 import org.junit.Assert;
@@ -61,6 +62,8 @@ public class LegacyTest extends AbstractTestingBase {
             Material.GILDED_BLACKSTONE, Material.LODESTONE, Material.PIGLIN_BANNER_PATTERN, Material.POLISHED_BLACKSTONE, Material.POLISHED_BLACKSTONE_BRICKS, Material.POLISHED_BLACKSTONE_BRICK_SLAB, Material.POLISHED_BLACKSTONE_BRICK_STAIRS,
             Material.POLISHED_BLACKSTONE_BRICK_WALL, Material.POLISHED_BLACKSTONE_BUTTON, Material.POLISHED_BLACKSTONE_PRESSURE_PLATE, Material.POLISHED_BLACKSTONE_SLAB, Material.POLISHED_BLACKSTONE_STAIRS, Material.POLISHED_BLACKSTONE_WALL, Material.QUARTZ_BRICKS,
             Material.SOUL_CAMPFIRE, Material.STRIDER_SPAWN_EGG, Material.WARPED_FUNGUS_ON_A_STICK, Material.ZOGLIN_SPAWN_EGG, Material.CHAIN, Material.MUSIC_DISC_PIGSTEP,
+            // 1.16.2
+            Material.PIGLIN_BRUTE_SPAWN_EGG,
             //
             Material.LEGACY_AIR, Material.LEGACY_DEAD_BUSH, Material.LEGACY_BURNING_FURNACE, Material.LEGACY_WALL_SIGN, Material.LEGACY_REDSTONE_TORCH_OFF, Material.LEGACY_SKULL, Material.LEGACY_REDSTONE_COMPARATOR_ON, Material.LEGACY_WALL_BANNER, Material.LEGACY_MONSTER_EGG));
 
@@ -115,5 +118,11 @@ public class LegacyTest extends AbstractTestingBase {
         for (Material material : org.bukkit.craftbukkit.util.CraftLegacy.modern_values()) {
             Assert.assertFalse("Must iterate only modern materials", material.isLegacy());
         }
+    }
+
+    @Test
+    public void testManual() {
+        Assert.assertEquals(Material.YELLOW_DYE, CraftMagicNumbers.INSTANCE.getMaterial("dandelion_yellow", 1631));
+        Assert.assertEquals(Material.OAK_WALL_SIGN, CraftMagicNumbers.INSTANCE.getMaterial("wall_sign", 1631));
     }
 }

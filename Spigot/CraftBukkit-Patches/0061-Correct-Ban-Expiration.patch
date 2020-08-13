@@ -1,11 +1,11 @@
-From d8346faba3fa1b67d98b742e1c9ed30a79a80a7e Mon Sep 17 00:00:00 2001
+From 171af2e0937322d86d58adc1f6bd2d7c441d636e Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Wed, 16 Apr 2014 11:14:38 +1000
 Subject: [PATCH] Correct Ban Expiration
 
 
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 93dc41f90..7aed96cf4 100644
+index c799429d2..1e325a2cc 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -502,7 +502,7 @@ public abstract class PlayerList {

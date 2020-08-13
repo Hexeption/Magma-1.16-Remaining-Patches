@@ -1,11 +1,11 @@
-From a3b1e63c245092cca8d5206e5bf99313eaa3d770 Mon Sep 17 00:00:00 2001
+From e6a0d6f7db545c1458a5c6eb1c9cd681cc91960a Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Fri, 20 Feb 2015 21:33:36 +1100
 Subject: [PATCH] Use Standard List for EntitySlices.
 
 
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index 2a4d55d64..3cdcdc60d 100644
+index 55c593ee1..ea09e7a74 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
 @@ -35,7 +35,7 @@ public class Chunk implements IChunkAccess {
@@ -80,7 +80,7 @@ index 2a4d55d64..3cdcdc60d 100644
      }
  
 diff --git a/src/main/java/net/minecraft/server/PlayerChunkMap.java b/src/main/java/net/minecraft/server/PlayerChunkMap.java
-index c9570bda8..05fcd6be3 100644
+index cbd8bb696..cb8feff55 100644
 --- a/src/main/java/net/minecraft/server/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/PlayerChunkMap.java
 @@ -591,11 +591,11 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
@@ -107,10 +107,10 @@ index c9570bda8..05fcd6be3 100644
                  return chunk.getTileEntities().size();
              }).orElse(0));
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 035c34555..ac7c9efc5 100644
+index 94e9ae222..c2bbcdb7a 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -955,11 +955,11 @@ public class WorldServer extends World implements GeneratorAccessSeed {
+@@ -993,11 +993,11 @@ public class WorldServer extends World implements GeneratorAccessSeed {
          }
          // Spigot End
          this.tileEntityListUnload.addAll(chunk.getTileEntities().values());

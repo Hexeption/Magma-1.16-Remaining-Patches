@@ -1,4 +1,4 @@
-From 3732a83e810ce2344ed53519fd37ee5da22cc895 Mon Sep 17 00:00:00 2001
+From 773c898a09682a728db42416d818f65e55c90c37 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Tue, 19 Feb 2019 22:30:00 +1100
 Subject: [PATCH] Allow Reading Old Large Chunks
@@ -9,25 +9,25 @@ If their size would overflow the header field (>= 255 sectors), it can just be r
 This code/concept was adapted from MinecraftForge.
 
 diff --git a/src/main/java/net/minecraft/server/RegionFile.java b/src/main/java/net/minecraft/server/RegionFile.java
-index e48c39fd2..43c5b8258 100644
+index 831636803..49387e812 100644
 --- a/src/main/java/net/minecraft/server/RegionFile.java
 +++ b/src/main/java/net/minecraft/server/RegionFile.java
-@@ -70,6 +70,14 @@ public class RegionFile implements AutoCloseable {
-                     if (k != 0) {
-                         int l = b(k);
-                         int i1 = a(k);
+@@ -74,6 +74,14 @@ public class RegionFile implements AutoCloseable {
+                     if (l != 0) {
+                         int i1 = b(l);
+                         int j1 = a(l);
 +                        // Spigot start
-+                        if (i1 == 255) {
++                        if (j1 == 255) {
 +                            // We're maxed out, so we need to read the proper length from the section
 +                            ByteBuffer realLen = ByteBuffer.allocate(4);
-+                            this.dataFile.read(realLen, l * 4096);
-+                            i1 = (realLen.getInt(0) + 4) / 4096 + 1;
++                            this.dataFile.read(realLen, i1 * 4096);
++                            j1 = (realLen.getInt(0) + 4) / 4096 + 1;
 +                        }
 +                        // Spigot end
  
-                         this.freeSectors.a(l, i1);
-                     }
-@@ -94,6 +102,13 @@ public class RegionFile implements AutoCloseable {
+                         if (i1 < 2) {
+                             RegionFile.LOGGER.warn("Region file {} has invalid sector at index: {}; sector {} overlaps with header", java_nio_file_path, k, i1);
+@@ -109,6 +117,13 @@ public class RegionFile implements AutoCloseable {
          } else {
              int j = b(i);
              int k = a(i);

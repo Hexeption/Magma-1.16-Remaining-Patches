@@ -23,7 +23,6 @@ import net.minecraft.server.TileEntityDropper;
 import net.minecraft.server.TileEntityEnchantTable;
 import net.minecraft.server.TileEntityEndGateway;
 import net.minecraft.server.TileEntityEnderChest;
-import net.minecraft.server.TileEntityFurnace;
 import net.minecraft.server.TileEntityFurnaceFurnace;
 import net.minecraft.server.TileEntityHopper;
 import net.minecraft.server.TileEntityJigsaw;
@@ -59,7 +58,7 @@ import org.bukkit.craftbukkit.block.CraftDropper;
 import org.bukkit.craftbukkit.block.CraftEnchantingTable;
 import org.bukkit.craftbukkit.block.CraftEndGateway;
 import org.bukkit.craftbukkit.block.CraftEnderChest;
-import org.bukkit.craftbukkit.block.CraftFurnace;
+import org.bukkit.craftbukkit.block.CraftFurnaceFurnace;
 import org.bukkit.craftbukkit.block.CraftHopper;
 import org.bukkit.craftbukkit.block.CraftJigsaw;
 import org.bukkit.craftbukkit.block.CraftJukebox;
@@ -241,6 +240,7 @@ public class CraftMetaBlockState extends CraftMetaItem implements BlockStateMeta
             case BELL:
             case BLAST_FURNACE:
             case CAMPFIRE:
+            case SOUL_CAMPFIRE:
             case JIGSAW:
             case LECTERN:
             case SMOKER:
@@ -267,10 +267,12 @@ public class CraftMetaBlockState extends CraftMetaItem implements BlockStateMeta
 
     @Override
     public BlockState getBlockState() {
+        Material stateMaterial = material; // Only actually used for jigsaws
         if (blockEntityTag != null) {
             switch (material) {
                 case SHIELD:
                     blockEntityTag.setString("id", "banner");
+                    stateMaterial = shieldToBannerHack(blockEntityTag);
                     break;
                 case SHULKER_BOX:
                 case WHITE_SHULKER_BOX:
@@ -297,7 +299,7 @@ public class CraftMetaBlockState extends CraftMetaItem implements BlockStateMeta
                     break;
             }
         }
-        TileEntity te = (blockEntityTag == null) ? null : TileEntity.create(CraftMagicNumbers.getBlock(material).getBlockData(), blockEntityTag);
+        TileEntity te = (blockEntityTag == null) ? null : TileEntity.create(CraftMagicNumbers.getBlock(stateMaterial).getBlockData(), blockEntityTag);
 
         switch (material) {
         case ACACIA_SIGN:
@@ -330,7 +332,7 @@ public class CraftMetaBlockState extends CraftMetaItem implements BlockStateMeta
             if (te == null) {
                 te = new TileEntityFurnaceFurnace();
             }
-            return new CraftFurnace(material, (TileEntityFurnace) te);
+            return new CraftFurnaceFurnace(material, (TileEntityFurnaceFurnace) te);
         case DISPENSER:
             if (te == null) {
                 te = new TileEntityDispenser();
@@ -497,6 +499,7 @@ public class CraftMetaBlockState extends CraftMetaItem implements BlockStateMeta
             }
             return new CraftBlastFurnace(material, (TileEntityBlastFurnace) te);
         case CAMPFIRE:
+        case SOUL_CAMPFIRE:
             if (te == null) {
                 te = new TileEntityCampfire();
             }
@@ -556,7 +559,7 @@ public class CraftMetaBlockState extends CraftMetaItem implements BlockStateMeta
             valid = blockState instanceof CraftChest;
             break;
         case FURNACE:
-            valid = blockState instanceof CraftFurnace;
+            valid = blockState instanceof CraftFurnaceFurnace;
             break;
         case DISPENSER:
             valid = blockState instanceof CraftDispenser;
@@ -680,6 +683,7 @@ public class CraftMetaBlockState extends CraftMetaItem implements BlockStateMeta
             valid = blockState instanceof CraftBlastFurnace;
             break;
         case CAMPFIRE:
+        case SOUL_CAMPFIRE:
             valid = blockState instanceof CraftCampfire;
             break;
         case JIGSAW:

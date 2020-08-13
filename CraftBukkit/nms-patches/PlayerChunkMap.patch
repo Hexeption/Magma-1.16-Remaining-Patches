@@ -38,7 +38,7 @@
 +    // CraftBukkit end
 +
      public PlayerChunkMap(WorldServer worldserver, Convertable.ConversionSession convertable_conversionsession, DataFixer datafixer, DefinedStructureManager definedstructuremanager, Executor executor, IAsyncTaskHandler<Runnable> iasynctaskhandler, ILightAccess ilightaccess, ChunkGenerator chunkgenerator, WorldLoadListener worldloadlistener, Supplier<WorldPersistentData> supplier, int i, boolean flag) {
-         super(new File(convertable_conversionsession.a(worldserver.func_234923_W_()), "region"), datafixer, flag);
+         super(new File(convertable_conversionsession.a(worldserver.getDimensionKey()), "region"), datafixer, flag);
          this.visibleChunks = this.updatingChunks.clone();
 @@ -195,9 +221,12 @@
  
@@ -121,8 +121,8 @@
      private NBTTagCompound readChunkData(ChunkCoordIntPair chunkcoordintpair) throws IOException {
          NBTTagCompound nbttagcompound = this.read(chunkcoordintpair);
  
--        return nbttagcompound == null ? null : this.getChunkData(this.world.func_234923_W_(), this.l, nbttagcompound);
-+        return nbttagcompound == null ? null : this.getChunkData(this.world.func_234922_V_(), this.l, nbttagcompound, chunkcoordintpair, world); // CraftBukkit
+-        return nbttagcompound == null ? null : this.getChunkData(this.world.getDimensionKey(), this.l, nbttagcompound);
++        return nbttagcompound == null ? null : this.getChunkData(this.world.getTypeKey(), this.l, nbttagcompound, chunkcoordintpair, world); // CraftBukkit
      }
  
      boolean isOutsideOfRange(ChunkCoordIntPair chunkcoordintpair) {

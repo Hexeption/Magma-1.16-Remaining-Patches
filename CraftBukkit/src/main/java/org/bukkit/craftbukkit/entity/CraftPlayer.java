@@ -77,6 +77,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Note;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
@@ -106,6 +107,7 @@ import org.bukkit.craftbukkit.map.RenderData;
 import org.bukkit.craftbukkit.scoreboard.CraftScoreboard;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerRegisterChannelEvent;
@@ -312,7 +314,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         if (getHandle().playerConnection == null) return;
 
         // Do not directly assign here, from the packethandler we'll assign it.
-        getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnPosition(new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())));
+        getHandle().playerConnection.sendPacket(new PacketPlayOutSpawnPosition(new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), loc.getYaw()));
     }
 
     @Override
@@ -726,7 +728,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         BlockPosition bed = getHandle().getSpawn();
 
         if (world != null && bed != null) {
-            Optional<Vec3D> spawnLoc = EntityHuman.getBed(((CraftWorld) world).getHandle(), bed, getHandle().isSpawnForced(), true);
+            Optional<Vec3D> spawnLoc = EntityHuman.getBed(((CraftWorld) world).getHandle(), bed, getHandle().getSpawnAngle(), getHandle().isSpawnForced(), true);
             if (spawnLoc.isPresent()) {
                 Vec3D vec = spawnLoc.get();
                 return new Location(world, vec.x, vec.y, vec.z);
@@ -743,9 +745,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     @Override
     public void setBedSpawnLocation(Location location, boolean override) {
         if (location == null) {
-            getHandle().setRespawnPosition(null, null, override, false);
+            getHandle().setRespawnPosition(null, null, location.getYaw(), override, false);
         } else {
-            getHandle().setRespawnPosition(((CraftWorld) location.getWorld()).getHandle().func_234923_W_(), new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()), override, false);
+            getHandle().setRespawnPosition(((CraftWorld) location.getWorld()).getHandle().getDimensionKey(), new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()), location.getYaw(), override, false);
         }
     }
 
@@ -755,6 +757,19 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
         BlockPosition bed = getHandle().getSpawn();
         return new Location(getWorld(), bed.getX(), bed.getY(), bed.getZ());
+    }
+
+    @Override
+    public boolean hasDiscoveredRecipe(NamespacedKey recipe) {
+        Preconditions.checkArgument(recipe != null, "recipe cannot be null");
+        return getHandle().getRecipeBook().hasDiscoveredRecipe(CraftNamespacedKey.toMinecraft(recipe));
+    }
+
+    @Override
+    public Set<NamespacedKey> getDiscoveredRecipes() {
+        ImmutableSet.Builder<NamespacedKey> bukkitRecipeKeys = ImmutableSet.builder();
+        getHandle().getRecipeBook().recipes.forEach(key -> bukkitRecipeKeys.add(CraftNamespacedKey.fromMinecraft(key)));
+        return bukkitRecipeKeys.build();
     }
 
     @Override
@@ -1385,6 +1400,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     }
 
     @Override
+    public void setNoDamageTicks(int ticks) {
+        super.setNoDamageTicks(ticks);
+        getHandle().invulnerableTicks = ticks; // SPIGOT-5921: Update both for players, like the getter above
+    }
+
+    @Override
     public void setFlySpeed(float value) {
         validateSpeed(value);
         EntityPlayer player = getHandle();
@@ -1399,6 +1420,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         EntityPlayer player = getHandle();
         player.abilities.walkSpeed = value / 2f;
         player.updateAbilities();
+        getHandle().getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(player.abilities.walkSpeed); // SPIGOT-5833: combination of the two in 1.16+
     }
 
     @Override
@@ -1525,10 +1547,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         }
         for (AttributeModifiable genericInstance : collection) {
             if (genericInstance.getAttribute() == GenericAttributes.MAX_HEALTH) {
-                genericInstance.setValue(scaledHealth ? healthScale : getMaxHealth());
+                collection.remove(genericInstance);
                 break;
             }
         }
+        AttributeModifiable dummy = new AttributeModifiable(GenericAttributes.MAX_HEALTH, (attribute) -> { });
+        dummy.setValue(scaledHealth ? healthScale : getMaxHealth());
+        collection.add(dummy);
     }
 
     @Override

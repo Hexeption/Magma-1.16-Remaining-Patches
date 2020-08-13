@@ -1,11 +1,11 @@
-From f4530e0e9aac3df909cf07595fd75dbf99beec28 Mon Sep 17 00:00:00 2001
+From 3f90b8ab5cfc5f638a72507411f93192b4972f96 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Sat, 30 Jul 2016 11:29:14 +1000
 Subject: [PATCH] Branchless NibbleArray
 
 
 diff --git a/src/main/java/net/minecraft/server/NibbleArray.java b/src/main/java/net/minecraft/server/NibbleArray.java
-index 87c672cbd..ed8c4a87b 100644
+index 99822dde7..9aeb6ed1b 100644
 --- a/src/main/java/net/minecraft/server/NibbleArray.java
 +++ b/src/main/java/net/minecraft/server/NibbleArray.java
 @@ -32,29 +32,27 @@ public class NibbleArray {

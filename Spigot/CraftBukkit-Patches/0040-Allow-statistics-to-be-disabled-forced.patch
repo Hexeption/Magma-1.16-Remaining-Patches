@@ -1,11 +1,11 @@
-From 9cc3be564b916849bd632a39ad2acae44ca79471 Mon Sep 17 00:00:00 2001
+From 90d2156d4595ce004cfe47d8e4869ca79f6dea76 Mon Sep 17 00:00:00 2001
 From: Thinkofdeath <thethinkofdeath@gmail.com>
 Date: Tue, 7 Jan 2014 15:56:26 +0000
 Subject: [PATCH] Allow statistics to be disabled/forced
 
 
 diff --git a/src/main/java/net/minecraft/server/ServerStatisticManager.java b/src/main/java/net/minecraft/server/ServerStatisticManager.java
-index 690861ba5..18725272f 100644
+index 00622284b..809c0b3d1 100644
 --- a/src/main/java/net/minecraft/server/ServerStatisticManager.java
 +++ b/src/main/java/net/minecraft/server/ServerStatisticManager.java
 @@ -34,6 +34,13 @@ public class ServerStatisticManager extends StatisticManager {

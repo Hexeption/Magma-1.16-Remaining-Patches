@@ -1,4 +1,4 @@
-From 5b03b5774f00a2184b847f7b025b224b75ba6806 Mon Sep 17 00:00:00 2001
+From b476d6633b86b4a46b24536cc23336207898f715 Mon Sep 17 00:00:00 2001
 From: Thinkofdeath <thinkofdeath@spigotmc.org>
 Date: Sun, 29 Jun 2014 21:10:34 +0100
 Subject: [PATCH] Limit block placement/interaction packets
@@ -25,7 +25,7 @@ index bb88f7c1a..194576502 100644
      }
  
 diff --git a/src/main/java/net/minecraft/server/PacketPlayInUseItem.java b/src/main/java/net/minecraft/server/PacketPlayInUseItem.java
-index 2f8160ed1..5941c3a5e 100644
+index db97aed02..cc2bf8150 100644
 --- a/src/main/java/net/minecraft/server/PacketPlayInUseItem.java
 +++ b/src/main/java/net/minecraft/server/PacketPlayInUseItem.java
 @@ -6,11 +6,13 @@ public class PacketPlayInUseItem implements Packet<PacketListenerPlayIn> {
@@ -40,13 +40,13 @@ index 2f8160ed1..5941c3a5e 100644
      public void a(PacketDataSerializer packetdataserializer) throws IOException {
 +        this.timestamp = System.currentTimeMillis(); // Spigot
          this.b = (EnumHand) packetdataserializer.a(EnumHand.class);
-         this.a = packetdataserializer.q();
+         this.a = packetdataserializer.r();
      }
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index 9ead516d7..a31e4b262 100644
+index 399368c3c..bbcd08024 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -1238,10 +1238,30 @@ public class PlayerConnection implements PacketListenerPlayIn {
+@@ -1233,10 +1233,30 @@ public class PlayerConnection implements PacketListenerPlayIn {
          }
      }
  
@@ -77,7 +77,7 @@ index 9ead516d7..a31e4b262 100644
          WorldServer worldserver = this.player.getWorldServer();
          EnumHand enumhand = packetplayinuseitem.b();
          ItemStack itemstack = this.player.b(enumhand);
-@@ -1284,6 +1304,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+@@ -1279,6 +1299,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
      public void a(PacketPlayInBlockPlace packetplayinblockplace) {
          PlayerConnectionUtils.ensureMainThread(packetplayinblockplace, this, this.player.getWorldServer());
          if (this.player.isFrozen()) return; // CraftBukkit

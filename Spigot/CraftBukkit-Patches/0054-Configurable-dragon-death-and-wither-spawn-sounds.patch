@@ -1,11 +1,11 @@
-From f4f7f0ee4c1140339f18eea0573ed2825986caaf Mon Sep 17 00:00:00 2001
+From 47b99f87bd23fcfcdb519c29c913e875e95261a9 Mon Sep 17 00:00:00 2001
 From: drXor <mcyoungsota@gmail.com>
 Date: Sat, 29 Mar 2014 13:44:25 -0400
 Subject: [PATCH] Configurable dragon death and wither spawn sounds
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityEnderDragon.java b/src/main/java/net/minecraft/server/EntityEnderDragon.java
-index d0d4ab8ac..d335eb789 100644
+index 599599c2d..61f06933e 100644
 --- a/src/main/java/net/minecraft/server/EntityEnderDragon.java
 +++ b/src/main/java/net/minecraft/server/EntityEnderDragon.java
 @@ -568,7 +568,24 @@ public class EntityEnderDragon extends EntityInsentient implements IMonster {
@@ -35,7 +35,7 @@ index d0d4ab8ac..d335eb789 100644
          }
  
 diff --git a/src/main/java/net/minecraft/server/EntityWither.java b/src/main/java/net/minecraft/server/EntityWither.java
-index 3de7d9e86..1d725c152 100644
+index 0a421a948..5fd3f79d8 100644
 --- a/src/main/java/net/minecraft/server/EntityWither.java
 +++ b/src/main/java/net/minecraft/server/EntityWither.java
 @@ -213,6 +213,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity {

@@ -1,4 +1,4 @@
-From bfc3e8c323f895629aac1537c46af3fb888aab1e Mon Sep 17 00:00:00 2001
+From 728fe0bacab9e1a4376dcc40bc50c0e0e70c4a5e Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Fri, 4 Jul 2014 13:28:45 +1000
 Subject: [PATCH] Further Seed Customisation
@@ -6,25 +6,27 @@ Subject: [PATCH] Further Seed Customisation
 Allow server admins that really want to to customise the seeds used in world generation even further.
 
 diff --git a/src/main/java/net/minecraft/server/ChunkGenerator.java b/src/main/java/net/minecraft/server/ChunkGenerator.java
-index 4da001d5c..ee6726e5c 100644
+index 290540f81..9a6fef215 100644
 --- a/src/main/java/net/minecraft/server/ChunkGenerator.java
 +++ b/src/main/java/net/minecraft/server/ChunkGenerator.java
-@@ -149,6 +149,7 @@ public abstract class ChunkGenerator {
+@@ -150,6 +150,7 @@ public abstract class ChunkGenerator {
  
              return blockposition1;
          } else {
 +            updateStructureSettings(worldserver, structureSettings); // Spigot
-             return structuregenerator.getNearestGeneratedFeature(worldserver, worldserver.getStructureManager(), blockposition, i, flag, worldserver.getSeed(), this.structureSettings.a(structuregenerator));
-         }
-     }
-@@ -229,11 +230,89 @@ public abstract class ChunkGenerator {
-     private void a(StructureFeature<?, ?> structurefeature, StructureManager structuremanager, IChunkAccess ichunkaccess, DefinedStructureManager definedstructuremanager, long i, ChunkCoordIntPair chunkcoordintpair, BiomeBase biomebase) {
-         StructureStart<?> structurestart = structuremanager.a(SectionPosition.a(ichunkaccess.getPos(), 0), structurefeature.b, ichunkaccess);
+             StructureSettingsFeature structuresettingsfeature = this.structureSettings.a(structuregenerator);
+ 
+             return structuresettingsfeature == null ? null : structuregenerator.getNearestGeneratedFeature(worldserver, worldserver.getStructureManager(), blockposition, i, flag, worldserver.getSeed(), structuresettingsfeature);
+@@ -227,6 +228,7 @@ public abstract class ChunkGenerator {
+     private void a(StructureFeature<?, ?> structurefeature, IRegistryCustom iregistrycustom, StructureManager structuremanager, IChunkAccess ichunkaccess, DefinedStructureManager definedstructuremanager, long i, ChunkCoordIntPair chunkcoordintpair, BiomeBase biomebase) {
+         StructureStart<?> structurestart = structuremanager.a(SectionPosition.a(ichunkaccess.getPos(), 0), structurefeature.d, ichunkaccess);
          int j = structurestart != null ? structurestart.j() : 0;
 +        updateStructureSettings(structuremanager.getWorld(), structureSettings); // Spigot
-         StructureStart<?> structurestart1 = structurefeature.a(this, this.b, definedstructuremanager, i, chunkcoordintpair, biomebase, j, this.structureSettings.a(structurefeature.b));
+         StructureSettingsFeature structuresettingsfeature = this.structureSettings.a(structurefeature.d);
  
-         structuremanager.a(SectionPosition.a(ichunkaccess.getPos(), 0), structurefeature.b, structurestart1, ichunkaccess);
+         if (structuresettingsfeature != null) {
+@@ -237,6 +239,83 @@ public abstract class ChunkGenerator {
+ 
      }
  
 +    // Spigot start
@@ -104,11 +106,11 @@ index 4da001d5c..ee6726e5c 100644
 +    }
 +    // Spigot end
 +
-     public void storeStructures(GeneratorAccess generatoraccess, StructureManager structuremanager, IChunkAccess ichunkaccess) {
+     public void storeStructures(GeneratorAccessSeed generatoraccessseed, StructureManager structuremanager, IChunkAccess ichunkaccess) {
          boolean flag = true;
          int i = ichunkaccess.getPos().x;
 diff --git a/src/main/java/net/minecraft/server/EntitySlime.java b/src/main/java/net/minecraft/server/EntitySlime.java
-index 2df6c6012..8e958367f 100644
+index 451ba6b25..dd7ceb679 100644
 --- a/src/main/java/net/minecraft/server/EntitySlime.java
 +++ b/src/main/java/net/minecraft/server/EntitySlime.java
 @@ -285,7 +285,7 @@ public class EntitySlime extends EntityInsentient implements IMonster {
@@ -135,11 +137,24 @@ index f5c5597b9..c434427ce 100644
 +    }
 +    // Spigot end
  }
+diff --git a/src/main/java/net/minecraft/server/StructureSettings.java b/src/main/java/net/minecraft/server/StructureSettings.java
+index 31176a5b5..212e606fb 100644
+--- a/src/main/java/net/minecraft/server/StructureSettings.java
++++ b/src/main/java/net/minecraft/server/StructureSettings.java
+@@ -26,7 +26,7 @@ public class StructureSettings {
+ 
+     public StructureSettings(Optional<StructureSettingsStronghold> optional, Map<StructureGenerator<?>, StructureSettingsFeature> map) {
+         this.e = (StructureSettingsStronghold) optional.orElse(null);
+-        this.d = map;
++        this.d = Maps.newHashMap(map); // Spigot
+     }
+ 
+     public StructureSettings(boolean flag) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftChunk.java b/src/main/java/org/bukkit/craftbukkit/CraftChunk.java
-index ffdaff29a..e34ecdeb2 100644
+index e78687b62..eaa60f89b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftChunk.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftChunk.java
-@@ -171,7 +171,7 @@ public class CraftChunk implements Chunk {
+@@ -172,7 +172,7 @@ public class CraftChunk implements Chunk {
      @Override
      public boolean isSlimeChunk() {
          // 987234911L is deterimined in EntitySlime when seeing if a slime can spawn in a chunk

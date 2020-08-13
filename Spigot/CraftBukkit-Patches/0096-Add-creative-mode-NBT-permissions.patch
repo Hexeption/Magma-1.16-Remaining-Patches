@@ -1,14 +1,14 @@
-From 723078749a591b9127fbf028fad55d32c9fdbfa0 Mon Sep 17 00:00:00 2001
+From 25bb77cf2f88a08dad14e2a70f79f98523c26ca7 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Mon, 25 Feb 2019 19:26:56 +1100
 Subject: [PATCH] Add creative mode NBT permissions
 
 
 diff --git a/src/main/java/net/minecraft/server/ItemBlock.java b/src/main/java/net/minecraft/server/ItemBlock.java
-index 1317569e8..6c7f677f6 100644
+index 403f4face..3bfcde5f7 100644
 --- a/src/main/java/net/minecraft/server/ItemBlock.java
 +++ b/src/main/java/net/minecraft/server/ItemBlock.java
-@@ -169,7 +169,7 @@ public class ItemBlock extends Item {
+@@ -184,7 +184,7 @@ public class ItemBlock extends Item {
                  TileEntity tileentity = world.getTileEntity(blockposition);
  
                  if (tileentity != null) {
@@ -31,10 +31,10 @@ index bc74453c8..138dc40c4 100644
              BlockStateList<Block, IBlockData> blockstatelist = block.getStates();
              Collection<IBlockState<?>> collection = blockstatelist.d();
 diff --git a/src/main/java/net/minecraft/server/PlayerConnection.java b/src/main/java/net/minecraft/server/PlayerConnection.java
-index b42f24667..883b7bd8c 100644
+index b82fe8d3e..4791b59fc 100644
 --- a/src/main/java/net/minecraft/server/PlayerConnection.java
 +++ b/src/main/java/net/minecraft/server/PlayerConnection.java
-@@ -2311,7 +2311,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
+@@ -2307,7 +2307,7 @@ public class PlayerConnection implements PacketListenerPlayIn {
              ItemStack itemstack = packetplayinsetcreativeslot.getItemStack();
              NBTTagCompound nbttagcompound = itemstack.b("BlockEntityTag");
  

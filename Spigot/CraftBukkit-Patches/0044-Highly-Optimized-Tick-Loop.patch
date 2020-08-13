@@ -1,11 +1,11 @@
-From 8c4672637035bc42e3f3cf94f3d483c1eb86ae23 Mon Sep 17 00:00:00 2001
+From 29bf829dcb711153b5642cc290fa4e46f733b63d Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Thu, 26 Jan 2017 21:50:51 +0000
 Subject: [PATCH] Highly Optimized Tick Loop
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 1953c7bbf..81250a2f3 100644
+index ffd751a35..4046f3064 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -149,6 +149,12 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
@@ -32,7 +32,7 @@ index 1953c7bbf..81250a2f3 100644
 +    }
 +    // Spigot End
 +
-     protected void v() {
+     protected void w() {
          try {
              if (this.init()) {
 @@ -790,8 +803,11 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
@@ -81,10 +81,10 @@ index 7f42259e6..d97bc8a3f 100644
  }
 diff --git a/src/main/java/org/spigotmc/TicksPerSecondCommand.java b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
 new file mode 100644
-index 000000000..be2e31dea
+index 000000000..9cd57c9d5
 --- /dev/null
 +++ b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
-@@ -0,0 +1,45 @@
+@@ -0,0 +1,47 @@
 +package org.spigotmc;
 +
 +import com.google.common.base.Joiner;
@@ -120,6 +120,8 @@ index 000000000..be2e31dea
 +            sb.append( ", " );
 +        }
 +        sender.sendMessage( sb.substring( 0, sb.length() - 2 ) );
++        sender.sendMessage(ChatColor.GOLD + "Current Memory Usage: " + ChatColor.GREEN + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)) + "/" + (Runtime.getRuntime().totalMemory() / (1024 * 1024)) + " mb (Max: "
++                + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + " mb)");
 +
 +        return true;
 +    }

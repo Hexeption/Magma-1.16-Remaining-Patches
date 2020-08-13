@@ -1,11 +1,11 @@
-From 8ce1bbd2640fd1e7ab87c25ea0a8739034385345 Mon Sep 17 00:00:00 2001
+From c1898066455d212482a12a39f4bfd00a757af483 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Wed, 18 Dec 2013 13:32:10 +1100
 Subject: [PATCH] Fire PreLogin Events in Offline Mode
 
 
 diff --git a/src/main/java/net/minecraft/server/LoginListener.java b/src/main/java/net/minecraft/server/LoginListener.java
-index abfc5c72d..5bba37bb0 100644
+index 4d1e2077b..514b8ba9c 100644
 --- a/src/main/java/net/minecraft/server/LoginListener.java
 +++ b/src/main/java/net/minecraft/server/LoginListener.java
 @@ -96,10 +96,23 @@ public class LoginListener implements PacketLoginInListener {

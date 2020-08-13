@@ -1,11 +1,11 @@
-From 6318e3ff9c867a36dd5ee3b1dd02ce566af115db Mon Sep 17 00:00:00 2001
+From 40932f5e7da1d9469ae57624a005a946576f5d17 Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Mon, 14 Oct 2013 19:20:10 +1100
 Subject: [PATCH] Arrow Despawn Rate
 
 
 diff --git a/src/main/java/net/minecraft/server/EntityArrow.java b/src/main/java/net/minecraft/server/EntityArrow.java
-index 0b396190f..b0930e054 100644
+index fc7730617..17be0b56f 100644
 --- a/src/main/java/net/minecraft/server/EntityArrow.java
 +++ b/src/main/java/net/minecraft/server/EntityArrow.java
 @@ -245,7 +245,7 @@ public abstract class EntityArrow extends IProjectile {

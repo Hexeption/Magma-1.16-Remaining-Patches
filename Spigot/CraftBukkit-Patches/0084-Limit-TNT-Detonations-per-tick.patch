@@ -1,4 +1,4 @@
-From ef9c39b9c0fef6d8b0d527ad1c133490f521091c Mon Sep 17 00:00:00 2001
+From 24128ba75291b953360af5e972ceac2bdd70cb28 Mon Sep 17 00:00:00 2001
 From: Aikar <aikar@aikar.co>
 Date: Wed, 20 Aug 2014 18:12:32 -0400
 Subject: [PATCH] Limit TNT Detonations per tick
@@ -7,7 +7,7 @@ This gives a per-world control on how much TNT will be processed per-tick,
 preventing a massive TNT detonation from lagging out the server.
 
 diff --git a/src/main/java/net/minecraft/server/EntityTNTPrimed.java b/src/main/java/net/minecraft/server/EntityTNTPrimed.java
-index 52ead0339..5fca541ca 100644
+index c66beabc8..ea4ecd983 100644
 --- a/src/main/java/net/minecraft/server/EntityTNTPrimed.java
 +++ b/src/main/java/net/minecraft/server/EntityTNTPrimed.java
 @@ -48,6 +48,7 @@ public class EntityTNTPrimed extends Entity {
@@ -19,10 +19,10 @@ index 52ead0339..5fca541ca 100644
              this.setMot(this.getMot().add(0.0D, -0.04D, 0.0D));
          }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 5d10bcf23..b0168f2ed 100644
+index dd1154f7a..f2b577830 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -729,6 +729,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -696,6 +696,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
  
          timings.tileEntityPending.stopTiming(); // Spigot
          gameprofilerfiller.exit();

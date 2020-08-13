@@ -1,14 +1,14 @@
-From aa9abeaf5dab7f87da8afb29554fa1b42d7d9a08 Mon Sep 17 00:00:00 2001
+From e3b1c546b973bb25800325c513acaa71946c9b2b Mon Sep 17 00:00:00 2001
 From: David <dmck2b@gmail.com>
 Date: Mon, 21 Apr 2014 12:43:08 +0100
 Subject: [PATCH] Prevent NoClassDefError crash and notify on crash
 
 
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index f9284e02a..5d10bcf23 100644
+index 86fc9ef61..dd1154f7a 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -77,6 +77,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -78,6 +78,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
      public final org.spigotmc.SpigotWorldConfig spigotConfig; // Spigot
  
      public final SpigotTimings.WorldTimingsHandler timings; // Spigot
@@ -16,14 +16,14 @@ index f9284e02a..5d10bcf23 100644
  
      public CraftWorld getWorld() {
          return this.world;
-@@ -332,7 +333,13 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -299,7 +300,13 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
                  // CraftBukkit start
                  if (!this.captureBlockStates) { // Don't notify clients or update physics while capturing blockstates
                      // Modularize client and physic updates
--                    notifyAndUpdatePhysics(blockposition, chunk, iblockdata1, iblockdata, iblockdata2, i);
+-                    notifyAndUpdatePhysics(blockposition, chunk, iblockdata1, iblockdata, iblockdata2, i, j);
 +                    // Spigot start
 +                    try {
-+                        notifyAndUpdatePhysics(blockposition, chunk, iblockdata1, iblockdata, iblockdata2, i);
++                        notifyAndUpdatePhysics(blockposition, chunk, iblockdata1, iblockdata, iblockdata2, i, j);
 +                    } catch (StackOverflowError ex) {
 +                        lastPhysicsProblem = new BlockPosition(blockposition);
 +                    }
@@ -31,7 +31,7 @@ index f9284e02a..5d10bcf23 100644
                  }
                  // CraftBukkit end
  
-@@ -479,6 +486,10 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -446,6 +453,10 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
                  }
                  // CraftBukkit end
                  iblockdata.doPhysics(this, blockposition, block, blockposition1, false);

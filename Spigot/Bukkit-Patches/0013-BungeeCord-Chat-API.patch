@@ -1,11 +1,11 @@
-From 185a1556ea697857b1ccbe1b2ddb44d2db147f44 Mon Sep 17 00:00:00 2001
+From 2d2ee1fcf8ebe55eb8730855fa26194e19ec8ca9 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Sat, 13 Dec 2014 02:59:14 +0100
 Subject: [PATCH] BungeeCord Chat API
 
 
 diff --git a/pom.xml b/pom.xml
-index 10436f10..82b370b7 100644
+index ba9e2f12..96687472 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -71,6 +71,13 @@
@@ -15,13 +15,21 @@ index 10436f10..82b370b7 100644
 +        <dependency>
 +            <groupId>net.md-5</groupId>
 +            <artifactId>bungeecord-chat</artifactId>
-+            <version>1.16-R0.1</version>
++            <version>1.16-R0.3</version>
 +            <type>jar</type>
 +            <scope>compile</scope>
 +        </dependency>
          <dependency>
              <groupId>org.yaml</groupId>
              <artifactId>snakeyaml</artifactId>
+@@ -191,6 +198,7 @@
+                         <link>https://guava.dev/releases/21.0/api/docs/</link>
+                         <link>https://javadoc.io/doc/org.yaml/snakeyaml/1.26/</link>
+                         <link>https://javadoc.io/doc/org.jetbrains/annotations-java5/19.0.0/</link>
++                        <link>https://javadoc.io/doc/net.md-5/bungeecord-chat/1.16-R0.3/</link>
+                     </links>
+                 </configuration>
+             </plugin>
 diff --git a/src/main/java/org/bukkit/ChatColor.java b/src/main/java/org/bukkit/ChatColor.java
 index 427368a7..44d597d7 100644
 --- a/src/main/java/org/bukkit/ChatColor.java
@@ -285,10 +293,10 @@ index 427368a7..44d597d7 100644
       * Gets the char value associated with this color
       *
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index b8c963b9..aba9b011 100644
+index f786ce9a..c74493f7 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1299,6 +1299,24 @@ public interface Server extends PluginMessageRecipient {
+@@ -1336,6 +1336,24 @@ public interface Server extends PluginMessageRecipient {
          public org.bukkit.configuration.file.YamlConfiguration getConfig() {
              throw new UnsupportedOperationException("Not supported yet.");
          }
@@ -342,10 +350,10 @@ index 8e42cb9d..a9020ecc 100644
  
      @NotNull
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index ced9a100..87e23bd6 100644
+index a00880dd..0859d2bc 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -1325,6 +1325,36 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -1339,6 +1339,36 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
          public java.util.Set<Player> getHiddenPlayers() {
              throw new UnsupportedOperationException("Not supported yet.");
          }

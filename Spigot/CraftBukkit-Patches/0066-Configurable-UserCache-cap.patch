@@ -1,22 +1,22 @@
-From 188923c0d3d11a4d071852f514006f2d2d840ad1 Mon Sep 17 00:00:00 2001
+From 55b10d868e1eca574487f9fecb98eeda69a7038e Mon Sep 17 00:00:00 2001
 From: drXor <mcyoungsota@gmail.com>
 Date: Fri, 25 Apr 2014 18:17:30 -0400
 Subject: [PATCH] Configurable UserCache cap
 
 
 diff --git a/src/main/java/net/minecraft/server/UserCache.java b/src/main/java/net/minecraft/server/UserCache.java
-index b2fae195f..09a74393c 100644
+index 464f12db5..3963e6003 100644
 --- a/src/main/java/net/minecraft/server/UserCache.java
 +++ b/src/main/java/net/minecraft/server/UserCache.java
-@@ -205,7 +205,7 @@ public class UserCache {
-     }
+@@ -230,7 +230,7 @@ public class UserCache {
+         JsonArray jsonarray = new JsonArray();
+         DateFormat dateformat = e();
  
-     public void c() {
--        String s = this.b.toJson(this.a(1000));
-+        String s = this.b.toJson(this.a(org.spigotmc.SpigotConfig.userCacheCap));
-         BufferedWriter bufferedwriter = null;
- 
-         try {
+-        this.a(1000).forEach((usercache_usercacheentry) -> {
++        this.a(org.spigotmc.SpigotConfig.userCacheCap).forEach((usercache_usercacheentry) -> { // Spigot
+             jsonarray.add(a(usercache_usercacheentry, dateformat));
+         });
+         String s = this.f.toJson(jsonarray);
 diff --git a/src/main/java/org/spigotmc/SpigotConfig.java b/src/main/java/org/spigotmc/SpigotConfig.java
 index de35b3907..7411fa731 100644
 --- a/src/main/java/org/spigotmc/SpigotConfig.java

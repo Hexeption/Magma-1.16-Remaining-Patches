@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/TileEntityBarrel.java
 +++ b/net/minecraft/server/TileEntityBarrel.java
-@@ -1,7 +1,54 @@
+@@ -1,7 +1,55 @@
  package net.minecraft.server;
  
 +// CraftBukkit start
@@ -21,6 +21,7 @@
 +    // CraftBukkit start - add fields and methods
 +    public List<HumanEntity> transaction = new ArrayList<>();
 +    private int maxStack = MAX_STACK;
++    public boolean opened;
 +
 +    @Override
 +    public List<ItemStack> getContents() {
@@ -55,3 +56,12 @@
      private NonNullList<ItemStack> items;
      private int b;
  
+@@ -100,7 +148,7 @@
+                 return;
+             }
+ 
+-            boolean flag = (Boolean) iblockdata.get(BlockBarrel.b);
++            boolean flag = (Boolean) iblockdata.get(BlockBarrel.b) && !opened; // CraftBukkit - only set flag if Barrel isn't set open by API.
+ 
+             if (flag) {
+                 this.playOpenSound(iblockdata, SoundEffects.BLOCK_BARREL_CLOSE);

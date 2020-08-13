@@ -1,4 +1,4 @@
-From a4c5b411291b7c17f6095afb100288f9cc522948 Mon Sep 17 00:00:00 2001
+From f9d7ced45a848656383d42c1636c259048d3e67a Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Sun, 1 Dec 2013 15:10:48 +1100
 Subject: [PATCH] mc-dev imports
@@ -79,10 +79,10 @@ index 000000000..3817ebb8b
 +}
 diff --git a/src/main/java/net/minecraft/server/BlockBase.java b/src/main/java/net/minecraft/server/BlockBase.java
 new file mode 100644
-index 000000000..5d51fd8f3
+index 000000000..219bdbe56
 --- /dev/null
 +++ b/src/main/java/net/minecraft/server/BlockBase.java
-@@ -0,0 +1,909 @@
+@@ -0,0 +1,928 @@
 +package net.minecraft.server;
 +
 +import com.google.common.collect.ImmutableMap;
@@ -204,7 +204,7 @@ index 000000000..5d51fd8f3
 +        return false;
 +    }
 +
-+    public BlockBase.EnumRandomOffset aj_() {
++    public BlockBase.EnumRandomOffset ah_() {
 +        return BlockBase.EnumRandomOffset.NONE;
 +    }
 +
@@ -260,7 +260,7 @@ index 000000000..5d51fd8f3
 +
 +    @Deprecated
 +    public int f(IBlockData iblockdata, IBlockAccess iblockaccess, BlockPosition blockposition) {
-+        return iblockdata.i(iblockaccess, blockposition) ? iblockaccess.H() : (iblockdata.a(iblockaccess, blockposition) ? 0 : 1);
++        return iblockdata.i(iblockaccess, blockposition) ? iblockaccess.J() : (iblockdata.a(iblockaccess, blockposition) ? 0 : 1);
 +    }
 +
 +    @Nullable
@@ -316,7 +316,7 @@ index 000000000..5d51fd8f3
 +    }
 +
 +    @Deprecated
-+    public void dropNaturally(IBlockData iblockdata, World world, BlockPosition blockposition, ItemStack itemstack) {}
++    public void dropNaturally(IBlockData iblockdata, WorldServer worldserver, BlockPosition blockposition, ItemStack itemstack) {}
 +
 +    @Deprecated
 +    public void attack(IBlockData iblockdata, World world, BlockPosition blockposition, EntityHuman entityhuman) {}
@@ -385,7 +385,7 @@ index 000000000..5d51fd8f3
 +        private final BlockBase.e o;
 +        private final BlockBase.e p;
 +        @Nullable
-+        protected BlockBase.BlockData.a a;
++        protected BlockBase.BlockData.Cache a;
 +
 +        protected BlockData(Block block, ImmutableMap<IBlockState<?>, Comparable<?>> immutablemap, MapCodec<IBlockData> mapcodec) {
 +            super(block, immutablemap, mapcodec);
@@ -408,7 +408,7 @@ index 000000000..5d51fd8f3
 +
 +        public void a() {
 +            if (!this.getBlock().o()) {
-+                this.a = new BlockBase.BlockData.a(this.p());
++                this.a = new BlockBase.BlockData.Cache(this.p());
 +            }
 +
 +        }
@@ -560,7 +560,7 @@ index 000000000..5d51fd8f3
 +        }
 +
 +        public Vec3D n(IBlockAccess iblockaccess, BlockPosition blockposition) {
-+            BlockBase.EnumRandomOffset blockbase_enumrandomoffset = this.getBlock().aj_();
++            BlockBase.EnumRandomOffset blockbase_enumrandomoffset = this.getBlock().ah_();
 +
 +            if (blockbase_enumrandomoffset == BlockBase.EnumRandomOffset.NONE) {
 +                return Vec3D.a;
@@ -629,8 +629,8 @@ index 000000000..5d51fd8f3
 +            this.getBlock().a(this.p(), world, blockposition, entity);
 +        }
 +
-+        public void dropNaturally(World world, BlockPosition blockposition, ItemStack itemstack) {
-+            this.getBlock().dropNaturally(this.p(), world, blockposition, itemstack);
++        public void dropNaturally(WorldServer worldserver, BlockPosition blockposition, ItemStack itemstack) {
++            this.getBlock().dropNaturally(this.p(), worldserver, blockposition, itemstack);
 +        }
 +
 +        public List<ItemStack> a(LootTableInfo.Builder loottableinfo_builder) {
@@ -707,22 +707,27 @@ index 000000000..5d51fd8f3
 +        }
 +
 +        public boolean d(IBlockAccess iblockaccess, BlockPosition blockposition, EnumDirection enumdirection) {
-+            return this.a != null ? this.a.d[enumdirection.ordinal()] : Block.d(this.p(), iblockaccess, blockposition, enumdirection);
++            return this.a(iblockaccess, blockposition, enumdirection, EnumBlockSupport.FULL);
++        }
++
++        public boolean a(IBlockAccess iblockaccess, BlockPosition blockposition, EnumDirection enumdirection, EnumBlockSupport enumblocksupport) {
++            return this.a != null ? this.a.a(enumdirection, enumblocksupport) : enumblocksupport.a(this.p(), iblockaccess, blockposition, enumdirection);
 +        }
 +
 +        public boolean r(IBlockAccess iblockaccess, BlockPosition blockposition) {
-+            return this.a != null ? this.a.e : Block.a(this.getCollisionShape(iblockaccess, blockposition));
++            return this.a != null ? this.a.d : Block.a(this.getCollisionShape(iblockaccess, blockposition));
 +        }
 +
 +        protected abstract IBlockData p();
 +
-+        public boolean isAlwaysDestroyable() {
++        public boolean isRequiresSpecialTool() {
 +            return this.j;
 +        }
 +
-+        static final class a {
++        static final class Cache {
 +
-+            private static final EnumDirection[] f = EnumDirection.values();
++            private static final EnumDirection[] e = EnumDirection.values();
++            private static final int f = EnumBlockSupport.values().length;
 +            protected final boolean a;
 +            private final boolean g;
 +            private final int h;
@@ -730,10 +735,10 @@ index 000000000..5d51fd8f3
 +            private final VoxelShape[] i;
 +            protected final VoxelShape b;
 +            protected final boolean c;
-+            protected final boolean[] d;
-+            protected final boolean e;
++            private final boolean[] j;
++            protected final boolean d;
 +
-+            private a(IBlockData iblockdata) {
++            private Cache(IBlockData iblockdata) {
 +                Block block = iblockdata.getBlock();
 +
 +                this.a = iblockdata.i(BlockAccessAir.INSTANCE, BlockPosition.ZERO);
@@ -744,9 +749,9 @@ index 000000000..5d51fd8f3
 +                if (!iblockdata.l()) {
 +                    this.i = null;
 +                } else {
-+                    this.i = new VoxelShape[f.length];
-+                    VoxelShape voxelshape = block.d(iblockdata, (IBlockAccess) BlockAccessAir.INSTANCE, BlockPosition.ZERO);
-+                    EnumDirection[] aenumdirection = f;
++                    this.i = new VoxelShape[BlockBase.BlockData.Cache.e.length];
++                    VoxelShape voxelshape = block.d(iblockdata, BlockAccessAir.INSTANCE, BlockPosition.ZERO);
++                    EnumDirection[] aenumdirection = BlockBase.BlockData.Cache.e;
 +
 +                    i = aenumdirection.length;
 +
@@ -761,17 +766,31 @@ index 000000000..5d51fd8f3
 +                this.c = Arrays.stream(EnumDirection.EnumAxis.values()).anyMatch((enumdirection_enumaxis) -> {
 +                    return this.b.b(enumdirection_enumaxis) < 0.0D || this.b.c(enumdirection_enumaxis) > 1.0D;
 +                });
-+                this.d = new boolean[6];
-+                EnumDirection[] aenumdirection1 = f;
++                this.j = new boolean[BlockBase.BlockData.Cache.e.length * BlockBase.BlockData.Cache.f];
++                EnumDirection[] aenumdirection1 = BlockBase.BlockData.Cache.e;
 +                int k = aenumdirection1.length;
 +
 +                for (i = 0; i < k; ++i) {
 +                    EnumDirection enumdirection1 = aenumdirection1[i];
++                    EnumBlockSupport[] aenumblocksupport = EnumBlockSupport.values();
++                    int l = aenumblocksupport.length;
 +
-+                    this.d[enumdirection1.ordinal()] = Block.d(iblockdata, BlockAccessAir.INSTANCE, BlockPosition.ZERO, enumdirection1);
++                    for (int i1 = 0; i1 < l; ++i1) {
++                        EnumBlockSupport enumblocksupport = aenumblocksupport[i1];
++
++                        this.j[b(enumdirection1, enumblocksupport)] = enumblocksupport.a(iblockdata, BlockAccessAir.INSTANCE, BlockPosition.ZERO, enumdirection1);
++                    }
 +                }
 +
-+                this.e = Block.a(iblockdata.getCollisionShape(BlockAccessAir.INSTANCE, BlockPosition.ZERO));
++                this.d = Block.a(iblockdata.getCollisionShape(BlockAccessAir.INSTANCE, BlockPosition.ZERO));
++            }
++
++            public boolean a(EnumDirection enumdirection, EnumBlockSupport enumblocksupport) {
++                return this.j[b(enumdirection, enumblocksupport)];
++            }
++
++            private static int b(EnumDirection enumdirection, EnumBlockSupport enumblocksupport) {
++                return enumdirection.ordinal() * BlockBase.BlockData.Cache.f + enumblocksupport.ordinal();
 +            }
 +        }
 +    }
@@ -994,7 +1013,7 @@ index 000000000..5d51fd8f3
 +}
 diff --git a/src/main/java/net/minecraft/server/ChunkRegionLoader.java b/src/main/java/net/minecraft/server/ChunkRegionLoader.java
 new file mode 100644
-index 000000000..e8fbd9f48
+index 000000000..31b05aa63
 --- /dev/null
 +++ b/src/main/java/net/minecraft/server/ChunkRegionLoader.java
 @@ -0,0 +1,522 @@
@@ -1032,7 +1051,7 @@ index 000000000..e8fbd9f48
 +            ChunkRegionLoader.LOGGER.error("Chunk file at {} is in the wrong location; relocating. (Expected {}, got {})", chunkcoordintpair, chunkcoordintpair, chunkcoordintpair1);
 +        }
 +
-+        BiomeStorage biomestorage = new BiomeStorage(chunkcoordintpair, worldchunkmanager, nbttagcompound1.hasKeyOfType("Biomes", 11) ? nbttagcompound1.getIntArray("Biomes") : null);
++        BiomeStorage biomestorage = new BiomeStorage(worldserver.r().b(IRegistry.ay), chunkcoordintpair, worldchunkmanager, nbttagcompound1.hasKeyOfType("Biomes", 11) ? nbttagcompound1.getIntArray("Biomes") : null);
 +        ChunkConverter chunkconverter = nbttagcompound1.hasKeyOfType("UpgradeData", 10) ? new ChunkConverter(nbttagcompound1.getCompound("UpgradeData")) : ChunkConverter.a;
 +        ProtoChunkTickList<Block> protochunkticklist = new ProtoChunkTickList<>((block) -> {
 +            return block == null || block.getBlockData().isAir();
@@ -1132,7 +1151,7 @@ index 000000000..e8fbd9f48
 +                    BlockPosition blockposition = (BlockPosition) iterator.next();
 +
 +                    if (((IChunkAccess) object).getType(blockposition).f() != 0) {
-+                        protochunk.j(blockposition);
++                        protochunk.k(blockposition);
 +                    }
 +                }
 +            }
@@ -1291,7 +1310,7 @@ index 000000000..e8fbd9f48
 +        while (iterator.hasNext()) {
 +            BlockPosition blockposition = (BlockPosition) iterator.next();
 +
-+            nbttagcompound3 = ichunkaccess.i(blockposition);
++            nbttagcompound3 = ichunkaccess.j(blockposition);
 +            if (nbttagcompound3 != null) {
 +                nbttaglist1.add(nbttagcompound3);
 +            }
@@ -1522,7 +1541,7 @@ index 000000000..e8fbd9f48
 +}
 diff --git a/src/main/java/net/minecraft/server/EntitySquid.java b/src/main/java/net/minecraft/server/EntitySquid.java
 new file mode 100644
-index 000000000..77c5593a2
+index 000000000..fb43b7ec2
 --- /dev/null
 +++ b/src/main/java/net/minecraft/server/EntitySquid.java
 @@ -0,0 +1,274 @@
@@ -1535,22 +1554,22 @@ index 000000000..77c5593a2
 +    public float b;
 +    public float c;
 +    public float d;
-+    public float bv;
-+    public float bw;
-+    public float bx;
-+    public float by;
-+    public float bz;
-+    private float bA;
-+    private float bB;
-+    private float bC;
-+    private float bD;
-+    private float bE;
-+    private float bF;
++    public float bo;
++    public float bp;
++    public float bq;
++    public float br;
++    public float bs;
++    private float bt;
++    private float bu;
++    private float bv;
++    private float bw;
++    private float bx;
++    private float by;
 +
 +    public EntitySquid(EntityTypes<? extends EntitySquid> entitytypes, World world) {
 +        super(entitytypes, world);
 +        this.random.setSeed((long) this.getId());
-+        this.bB = 1.0F / (this.random.nextFloat() + 1.0F) * 0.2F;
++        this.bu = 1.0F / (this.random.nextFloat() + 1.0F) * 0.2F;
 +    }
 +
 +    @Override
@@ -1597,53 +1616,53 @@ index 000000000..77c5593a2
 +    public void movementTick() {
 +        super.movementTick();
 +        this.c = this.b;
-+        this.bv = this.d;
-+        this.bx = this.bw;
-+        this.bz = this.by;
-+        this.bw += this.bB;
-+        if ((double) this.bw > 6.283185307179586D) {
++        this.bo = this.d;
++        this.bq = this.bp;
++        this.bs = this.br;
++        this.bp += this.bu;
++        if ((double) this.bp > 6.283185307179586D) {
 +            if (this.world.isClientSide) {
-+                this.bw = 6.2831855F;
++                this.bp = 6.2831855F;
 +            } else {
-+                this.bw = (float) ((double) this.bw - 6.283185307179586D);
++                this.bp = (float) ((double) this.bp - 6.283185307179586D);
 +                if (this.random.nextInt(10) == 0) {
-+                    this.bB = 1.0F / (this.random.nextFloat() + 1.0F) * 0.2F;
++                    this.bu = 1.0F / (this.random.nextFloat() + 1.0F) * 0.2F;
 +                }
 +
 +                this.world.broadcastEntityEffect(this, (byte) 19);
 +            }
 +        }
 +
-+        if (this.aD()) {
-+            if (this.bw < 3.1415927F) {
-+                float f = this.bw / 3.1415927F;
++        if (this.aG()) {
++            if (this.bp < 3.1415927F) {
++                float f = this.bp / 3.1415927F;
 +
-+                this.by = MathHelper.sin(f * f * 3.1415927F) * 3.1415927F * 0.25F;
++                this.br = MathHelper.sin(f * f * 3.1415927F) * 3.1415927F * 0.25F;
 +                if ((double) f > 0.75D) {
-+                    this.bA = 1.0F;
-+                    this.bC = 1.0F;
++                    this.bt = 1.0F;
++                    this.bv = 1.0F;
 +                } else {
-+                    this.bC *= 0.8F;
++                    this.bv *= 0.8F;
 +                }
 +            } else {
-+                this.by = 0.0F;
-+                this.bA *= 0.9F;
-+                this.bC *= 0.99F;
++                this.br = 0.0F;
++                this.bt *= 0.9F;
++                this.bv *= 0.99F;
 +            }
 +
 +            if (!this.world.isClientSide) {
-+                this.setMot((double) (this.bD * this.bA), (double) (this.bE * this.bA), (double) (this.bF * this.bA));
++                this.setMot((double) (this.bw * this.bt), (double) (this.bx * this.bt), (double) (this.by * this.bt));
 +            }
 +
 +            Vec3D vec3d = this.getMot();
-+            float f1 = MathHelper.sqrt(b(vec3d));
++            float f1 = MathHelper.sqrt(c(vec3d));
 +
-+            this.aH += (-((float) MathHelper.d(vec3d.x, vec3d.z)) * 57.295776F - this.aH) * 0.1F;
-+            this.yaw = this.aH;
-+            this.d = (float) ((double) this.d + 3.141592653589793D * (double) this.bC * 1.5D);
++            this.aA += (-((float) MathHelper.d(vec3d.x, vec3d.z)) * 57.295776F - this.aA) * 0.1F;
++            this.yaw = this.aA;
++            this.d = (float) ((double) this.d + 3.141592653589793D * (double) this.bv * 1.5D);
 +            this.b += (-((float) MathHelper.d((double) f1, vec3d.y)) * 57.295776F - this.b) * 0.1F;
 +        } else {
-+            this.by = MathHelper.e(MathHelper.sin(this.bw)) * 3.1415927F * 0.25F;
++            this.br = MathHelper.e(MathHelper.sin(this.bp)) * 3.1415927F * 0.25F;
 +            if (!this.world.isClientSide) {
 +                double d0 = this.getMot().y;
 +
@@ -1664,26 +1683,26 @@ index 000000000..77c5593a2
 +    @Override
 +    public boolean damageEntity(DamageSource damagesource, float f) {
 +        if (super.damageEntity(damagesource, f) && this.getLastDamager() != null) {
-+            this.eM();
++            this.eL();
 +            return true;
 +        } else {
 +            return false;
 +        }
 +    }
 +
-+    private Vec3D g(Vec3D vec3d) {
++    private Vec3D i(Vec3D vec3d) {
 +        Vec3D vec3d1 = vec3d.a(this.c * 0.017453292F);
 +
-+        vec3d1 = vec3d1.b(-this.aI * 0.017453292F);
++        vec3d1 = vec3d1.b(-this.aB * 0.017453292F);
 +        return vec3d1;
 +    }
 +
-+    private void eM() {
++    private void eL() {
 +        this.playSound(SoundEffects.ENTITY_SQUID_SQUIRT, this.getSoundVolume(), this.dG());
-+        Vec3D vec3d = this.g(new Vec3D(0.0D, -1.0D, 0.0D)).add(this.locX(), this.locY(), this.locZ());
++        Vec3D vec3d = this.i(new Vec3D(0.0D, -1.0D, 0.0D)).add(this.locX(), this.locY(), this.locZ());
 +
 +        for (int i = 0; i < 30; ++i) {
-+            Vec3D vec3d1 = this.g(new Vec3D((double) this.random.nextFloat() * 0.6D - 0.3D, -1.0D, (double) this.random.nextFloat() * 0.6D - 0.3D));
++            Vec3D vec3d1 = this.i(new Vec3D((double) this.random.nextFloat() * 0.6D - 0.3D, -1.0D, (double) this.random.nextFloat() * 0.6D - 0.3D));
 +            Vec3D vec3d2 = vec3d1.a(0.3D + (double) (this.random.nextFloat() * 2.0F));
 +
 +            ((WorldServer) this.world).a(Particles.SQUID_INK, vec3d.x, vec3d.y + 0.5D, vec3d.z, 0, vec3d2.x, vec3d2.y, vec3d2.z, 0.10000000149011612D);
@@ -1692,7 +1711,7 @@ index 000000000..77c5593a2
 +    }
 +
 +    @Override
-+    public void f(Vec3D vec3d) {
++    public void g(Vec3D vec3d) {
 +        this.move(EnumMoveType.SELF, this.getMot());
 +    }
 +
@@ -1701,13 +1720,13 @@ index 000000000..77c5593a2
 +    }
 +
 +    public void a(float f, float f1, float f2) {
-+        this.bD = f;
-+        this.bE = f1;
-+        this.bF = f2;
++        this.bw = f;
++        this.bx = f1;
++        this.by = f2;
 +    }
 +
-+    public boolean eL() {
-+        return this.bD != 0.0F || this.bE != 0.0F || this.bF != 0.0F;
++    public boolean eK() {
++        return this.bw != 0.0F || this.bx != 0.0F || this.by != 0.0F;
 +    }
 +
 +    class a extends PathfinderGoal {
@@ -1788,7 +1807,7 @@ index 000000000..77c5593a2
 +
 +            if (i > 100) {
 +                this.b.a(0.0F, 0.0F, 0.0F);
-+            } else if (this.b.getRandom().nextInt(50) == 0 || !this.b.inWater || !this.b.eL()) {
++            } else if (this.b.getRandom().nextInt(50) == 0 || !this.b.inWater || !this.b.eK()) {
 +                float f = this.b.getRandom().nextFloat() * 6.2831855F;
 +                float f1 = MathHelper.cos(f) * 0.2F;
 +                float f2 = -0.1F + this.b.getRandom().nextFloat() * 0.2F;
@@ -1989,10 +2008,10 @@ index 000000000..bc74453c8
 +}
 diff --git a/src/main/java/net/minecraft/server/NBTCompressedStreamTools.java b/src/main/java/net/minecraft/server/NBTCompressedStreamTools.java
 new file mode 100644
-index 000000000..1514aebf5
+index 000000000..f61a57ca3
 --- /dev/null
 +++ b/src/main/java/net/minecraft/server/NBTCompressedStreamTools.java
-@@ -0,0 +1,117 @@
+@@ -0,0 +1,175 @@
 +package net.minecraft.server;
 +
 +import java.io.BufferedInputStream;
@@ -2001,6 +2020,9 @@ index 000000000..1514aebf5
 +import java.io.DataInputStream;
 +import java.io.DataOutput;
 +import java.io.DataOutputStream;
++import java.io.File;
++import java.io.FileInputStream;
++import java.io.FileOutputStream;
 +import java.io.IOException;
 +import java.io.InputStream;
 +import java.io.OutputStream;
@@ -2008,6 +2030,35 @@ index 000000000..1514aebf5
 +import java.util.zip.GZIPOutputStream;
 +
 +public class NBTCompressedStreamTools {
++
++    public static NBTTagCompound a(File file) throws IOException {
++        FileInputStream fileinputstream = new FileInputStream(file);
++        Throwable throwable = null;
++
++        NBTTagCompound nbttagcompound;
++
++        try {
++            nbttagcompound = a((InputStream) fileinputstream);
++        } catch (Throwable throwable1) {
++            throwable = throwable1;
++            throw throwable1;
++        } finally {
++            if (fileinputstream != null) {
++                if (throwable != null) {
++                    try {
++                        fileinputstream.close();
++                    } catch (Throwable throwable2) {
++                        throwable.addSuppressed(throwable2);
++                    }
++                } else {
++                    fileinputstream.close();
++                }
++            }
++
++        }
++
++        return nbttagcompound;
++    }
 +
 +    public static NBTTagCompound a(InputStream inputstream) throws IOException {
 +        DataInputStream datainputstream = new DataInputStream(new BufferedInputStream(new GZIPInputStream(inputstream)));
@@ -2038,6 +2089,32 @@ index 000000000..1514aebf5
 +        return nbttagcompound;
 +    }
 +
++    public static void a(NBTTagCompound nbttagcompound, File file) throws IOException {
++        FileOutputStream fileoutputstream = new FileOutputStream(file);
++        Throwable throwable = null;
++
++        try {
++            a(nbttagcompound, (OutputStream) fileoutputstream);
++        } catch (Throwable throwable1) {
++            throwable = throwable1;
++            throw throwable1;
++        } finally {
++            if (fileoutputstream != null) {
++                if (throwable != null) {
++                    try {
++                        fileoutputstream.close();
++                    } catch (Throwable throwable2) {
++                        throwable.addSuppressed(throwable2);
++                    }
++                } else {
++                    fileoutputstream.close();
++                }
++            }
++
++        }
++
++    }
++
 +    public static void a(NBTTagCompound nbttagcompound, OutputStream outputstream) throws IOException {
 +        DataOutputStream dataoutputstream = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(outputstream)));
 +        Throwable throwable = null;
@@ -2064,8 +2141,8 @@ index 000000000..1514aebf5
 +
 +    }
 +
-+    public static NBTTagCompound a(DataInputStream datainputstream) throws IOException {
-+        return a((DataInput) datainputstream, NBTReadLimiter.a);
++    public static NBTTagCompound a(DataInput datainput) throws IOException {
++        return a(datainput, NBTReadLimiter.a);
 +    }
 +
 +    public static NBTTagCompound a(DataInput datainput, NBTReadLimiter nbtreadlimiter) throws IOException {
@@ -2495,7 +2572,7 @@ index 000000000..98f589514
 +}
 diff --git a/src/main/java/net/minecraft/server/NibbleArray.java b/src/main/java/net/minecraft/server/NibbleArray.java
 new file mode 100644
-index 000000000..87c672cbd
+index 000000000..99822dde7
 --- /dev/null
 +++ b/src/main/java/net/minecraft/server/NibbleArray.java
 @@ -0,0 +1,100 @@
@@ -2513,7 +2590,7 @@ index 000000000..87c672cbd
 +    public NibbleArray(byte[] abyte) {
 +        this.a = abyte;
 +        if (abyte.length != 2048) {
-+            throw (IllegalArgumentException) SystemUtils.c(new IllegalArgumentException("ChunkNibbleArrays should be 2048 bytes not: " + abyte.length));
++            throw (IllegalArgumentException) SystemUtils.c((Throwable) (new IllegalArgumentException("ChunkNibbleArrays should be 2048 bytes not: " + abyte.length)));
 +        }
 +    }
 +
@@ -2728,7 +2805,7 @@ index 000000000..699815b3d
 +}
 diff --git a/src/main/java/net/minecraft/server/PacketPlayInUseItem.java b/src/main/java/net/minecraft/server/PacketPlayInUseItem.java
 new file mode 100644
-index 000000000..2f8160ed1
+index 000000000..db97aed02
 --- /dev/null
 +++ b/src/main/java/net/minecraft/server/PacketPlayInUseItem.java
 @@ -0,0 +1,35 @@
@@ -2746,7 +2823,7 @@ index 000000000..2f8160ed1
 +    @Override
 +    public void a(PacketDataSerializer packetdataserializer) throws IOException {
 +        this.b = (EnumHand) packetdataserializer.a(EnumHand.class);
-+        this.a = packetdataserializer.q();
++        this.a = packetdataserializer.r();
 +    }
 +
 +    @Override
@@ -2825,12 +2902,13 @@ index 000000000..40e0ea5bc
 +}
 diff --git a/src/main/java/net/minecraft/server/RegionFile.java b/src/main/java/net/minecraft/server/RegionFile.java
 new file mode 100644
-index 000000000..e48c39fd2
+index 000000000..831636803
 --- /dev/null
 +++ b/src/main/java/net/minecraft/server/RegionFile.java
-@@ -0,0 +1,395 @@
+@@ -0,0 +1,410 @@
 +package net.minecraft.server;
 +
++import com.google.common.annotations.VisibleForTesting;
 +import java.io.BufferedInputStream;
 +import java.io.BufferedOutputStream;
 +import java.io.ByteArrayInputStream;
@@ -2855,31 +2933,32 @@ index 000000000..e48c39fd2
 +public class RegionFile implements AutoCloseable {
 +
 +    private static final Logger LOGGER = LogManager.getLogger();
-+    private static final ByteBuffer b = ByteBuffer.allocateDirect(1);
++    private static final ByteBuffer c = ByteBuffer.allocateDirect(1);
 +    private final FileChannel dataFile;
-+    private final java.nio.file.Path d;
-+    private final RegionFileCompression e;
-+    private final ByteBuffer f;
-+    private final IntBuffer g;
++    private final java.nio.file.Path e;
++    private final RegionFileCompression f;
++    private final ByteBuffer g;
 +    private final IntBuffer h;
-+    private final RegionFileBitSet freeSectors;
++    private final IntBuffer i;
++    @VisibleForTesting
++    protected final RegionFileBitSet freeSectors;
 +
 +    public RegionFile(File file, File file1, boolean flag) throws IOException {
 +        this(file.toPath(), file1.toPath(), RegionFileCompression.b, flag);
 +    }
 +
 +    public RegionFile(java.nio.file.Path java_nio_file_path, java.nio.file.Path java_nio_file_path1, RegionFileCompression regionfilecompression, boolean flag) throws IOException {
-+        this.f = ByteBuffer.allocateDirect(8192);
++        this.g = ByteBuffer.allocateDirect(8192);
 +        this.freeSectors = new RegionFileBitSet();
-+        this.e = regionfilecompression;
++        this.f = regionfilecompression;
 +        if (!Files.isDirectory(java_nio_file_path1, new LinkOption[0])) {
 +            throw new IllegalArgumentException("Expected directory, got " + java_nio_file_path1.toAbsolutePath());
 +        } else {
-+            this.d = java_nio_file_path1;
-+            this.g = this.f.asIntBuffer();
-+            ((java.nio.Buffer) this.g).limit(1024);
-+            ((java.nio.Buffer) this.f).position(4096);
-+            this.h = this.f.asIntBuffer();
++            this.e = java_nio_file_path1;
++            this.h = this.g.asIntBuffer();
++            ((java.nio.Buffer) this.h).limit(1024);
++            ((java.nio.Buffer) this.g).position(4096);
++            this.i = this.g.asIntBuffer();
 +            if (flag) {
 +                this.dataFile = FileChannel.open(java_nio_file_path, StandardOpenOption.CREATE, StandardOpenOption.READ, StandardOpenOption.WRITE, StandardOpenOption.DSYNC);
 +            } else {
@@ -2887,22 +2966,35 @@ index 000000000..e48c39fd2
 +            }
 +
 +            this.freeSectors.a(0, 2);
-+            ((java.nio.Buffer) this.f).position(0);
-+            int i = this.dataFile.read(this.f, 0L);
++            ((java.nio.Buffer) this.g).position(0);
++            int i = this.dataFile.read(this.g, 0L);
 +
 +            if (i != -1) {
 +                if (i != 8192) {
 +                    RegionFile.LOGGER.warn("Region file {} has truncated header: {}", java_nio_file_path, i);
 +                }
 +
-+                for (int j = 0; j < 1024; ++j) {
-+                    int k = this.g.get(j);
++                long j = Files.size(java_nio_file_path);
 +
-+                    if (k != 0) {
-+                        int l = b(k);
-+                        int i1 = a(k);
++                for (int k = 0; k < 1024; ++k) {
++                    int l = this.h.get(k);
 +
-+                        this.freeSectors.a(l, i1);
++                    if (l != 0) {
++                        int i1 = b(l);
++                        int j1 = a(l);
++
++                        if (i1 < 2) {
++                            RegionFile.LOGGER.warn("Region file {} has invalid sector at index: {}; sector {} overlaps with header", java_nio_file_path, k, i1);
++                            this.h.put(k, 0);
++                        } else if (j1 == 0) {
++                            RegionFile.LOGGER.warn("Region file {} has an invalid sector at index: {}; size has to be > 0", java_nio_file_path, k);
++                            this.h.put(k, 0);
++                        } else if ((long) i1 * 4096L > j) {
++                            RegionFile.LOGGER.warn("Region file {} has an invalid sector at index: {}; sector {} is out of bounds", java_nio_file_path, k, i1);
++                            this.h.put(k, 0);
++                        } else {
++                            this.freeSectors.a(i1, j1);
++                        }
 +                    }
 +                }
 +            }
@@ -2913,7 +3005,7 @@ index 000000000..e48c39fd2
 +    private java.nio.file.Path e(ChunkCoordIntPair chunkcoordintpair) {
 +        String s = "c." + chunkcoordintpair.x + "." + chunkcoordintpair.z + ".mcc";
 +
-+        return this.d.resolve(s);
++        return this.e.resolve(s);
 +    }
 +
 +    @Nullable
@@ -3008,7 +3100,7 @@ index 000000000..e48c39fd2
 +    }
 +
 +    private static int b(int i) {
-+        return i >> 8;
++        return i >> 8 & 16777215;
 +    }
 +
 +    private static int c(int i) {
@@ -3067,7 +3159,7 @@ index 000000000..e48c39fd2
 +    }
 +
 +    public DataOutputStream c(ChunkCoordIntPair chunkcoordintpair) throws IOException {
-+        return new DataOutputStream(new BufferedOutputStream(this.e.a((OutputStream) (new RegionFile.ChunkBuffer(chunkcoordintpair)))));
++        return new DataOutputStream(new BufferedOutputStream(this.f.a((OutputStream) (new RegionFile.ChunkBuffer(chunkcoordintpair)))));
 +    }
 +
 +    public void a() throws IOException {
@@ -3076,7 +3168,7 @@ index 000000000..e48c39fd2
 +
 +    protected synchronized void a(ChunkCoordIntPair chunkcoordintpair, ByteBuffer bytebuffer) throws IOException {
 +        int i = g(chunkcoordintpair);
-+        int j = this.g.get(i);
++        int j = this.h.get(i);
 +        int k = b(j);
 +        int l = a(j);
 +        int i1 = bytebuffer.remaining();
@@ -3104,8 +3196,8 @@ index 000000000..e48c39fd2
 +
 +        int l1 = (int) (SystemUtils.getTimeMillis() / 1000L);
 +
-+        this.g.put(i, this.a(k1, j1));
-+        this.h.put(i, l1);
++        this.h.put(i, this.a(k1, j1));
++        this.i.put(i, l1);
 +        this.c();
 +        regionfile_b.run();
 +        if (k != 0) {
@@ -3118,13 +3210,13 @@ index 000000000..e48c39fd2
 +        ByteBuffer bytebuffer = ByteBuffer.allocate(5);
 +
 +        bytebuffer.putInt(1);
-+        bytebuffer.put((byte) (this.e.a() | 128));
++        bytebuffer.put((byte) (this.f.a() | 128));
 +        ((java.nio.Buffer) bytebuffer).flip();
 +        return bytebuffer;
 +    }
 +
 +    private RegionFile.b a(java.nio.file.Path java_nio_file_path, ByteBuffer bytebuffer) throws IOException {
-+        java.nio.file.Path java_nio_file_path1 = Files.createTempFile(this.d, "tmp", (String) null);
++        java.nio.file.Path java_nio_file_path1 = Files.createTempFile(this.e, "tmp", (String) null);
 +        FileChannel filechannel = FileChannel.open(java_nio_file_path1, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 +        Throwable throwable = null;
 +
@@ -3155,12 +3247,12 @@ index 000000000..e48c39fd2
 +    }
 +
 +    private void c() throws IOException {
-+        ((java.nio.Buffer) this.f).position(0);
-+        this.dataFile.write(this.f, 0L);
++        ((java.nio.Buffer) this.g).position(0);
++        this.dataFile.write(this.g, 0L);
 +    }
 +
 +    private int getOffset(ChunkCoordIntPair chunkcoordintpair) {
-+        return this.g.get(g(chunkcoordintpair));
++        return this.h.get(g(chunkcoordintpair));
 +    }
 +
 +    public boolean chunkExists(ChunkCoordIntPair chunkcoordintpair) {
@@ -3189,7 +3281,7 @@ index 000000000..e48c39fd2
 +        int j = c(i) * 4096;
 +
 +        if (i != j) {
-+            ByteBuffer bytebuffer = RegionFile.b.duplicate();
++            ByteBuffer bytebuffer = RegionFile.c.duplicate();
 +
 +            ((java.nio.Buffer) bytebuffer).position(0);
 +            this.dataFile.write(bytebuffer, (long) (j - 1));
@@ -3212,7 +3304,7 @@ index 000000000..e48c39fd2
 +            super.write(0);
 +            super.write(0);
 +            super.write(0);
-+            super.write(RegionFile.this.e.a());
++            super.write(RegionFile.this.f.a());
 +            this.b = chunkcoordintpair;
 +        }
 +
@@ -3226,7 +3318,7 @@ index 000000000..e48c39fd2
 +}
 diff --git a/src/main/java/net/minecraft/server/ServerStatisticManager.java b/src/main/java/net/minecraft/server/ServerStatisticManager.java
 new file mode 100644
-index 000000000..690861ba5
+index 000000000..00622284b
 --- /dev/null
 +++ b/src/main/java/net/minecraft/server/ServerStatisticManager.java
 @@ -0,0 +1,234 @@
@@ -3447,7 +3539,7 @@ index 000000000..690861ba5
 +    }
 +
 +    public void a(EntityPlayer entityplayer) {
-+        int i = this.c.ag();
++        int i = this.c.ah();
 +        Object2IntMap<Statistic<?>> object2intmap = new Object2IntOpenHashMap();
 +
 +        if (i - this.f > 300) {
@@ -3529,6 +3621,72 @@ index 000000000..f5c5597b9
 +                return structurepiece.g().b((BaseBlockPosition) blockposition);
 +            });
 +        }).findFirst(), StructureStart.a);
++    }
++}
+diff --git a/src/main/java/net/minecraft/server/StructureSettings.java b/src/main/java/net/minecraft/server/StructureSettings.java
+new file mode 100644
+index 000000000..31176a5b5
+--- /dev/null
++++ b/src/main/java/net/minecraft/server/StructureSettings.java
+@@ -0,0 +1,60 @@
++package net.minecraft.server;
++
++import com.google.common.collect.ImmutableMap;
++import com.google.common.collect.Maps;
++import com.mojang.serialization.Codec;
++import com.mojang.serialization.codecs.RecordCodecBuilder;
++import java.util.Iterator;
++import java.util.Map;
++import java.util.Optional;
++import javax.annotation.Nullable;
++
++public class StructureSettings {
++
++    public static final Codec<StructureSettings> a = RecordCodecBuilder.create((instance) -> {
++        return instance.group(StructureSettingsStronghold.a.optionalFieldOf("stronghold").forGetter((structuresettings) -> {
++            return Optional.ofNullable(structuresettings.e);
++        }), Codec.simpleMap(IRegistry.STRUCTURE_FEATURE, StructureSettingsFeature.a, IRegistry.STRUCTURE_FEATURE).fieldOf("structures").forGetter((structuresettings) -> {
++            return structuresettings.d;
++        })).apply(instance, StructureSettings::new);
++    });
++    public static final ImmutableMap<StructureGenerator<?>, StructureSettingsFeature> b = ImmutableMap.<StructureGenerator<?>, StructureSettingsFeature>builder().put(StructureGenerator.VILLAGE, new StructureSettingsFeature(32, 8, 10387312)).put(StructureGenerator.DESERT_PYRAMID, new StructureSettingsFeature(32, 8, 14357617)).put(StructureGenerator.IGLOO, new StructureSettingsFeature(32, 8, 14357618)).put(StructureGenerator.JUNGLE_PYRAMID, new StructureSettingsFeature(32, 8, 14357619)).put(StructureGenerator.SWAMP_HUT, new StructureSettingsFeature(32, 8, 14357620)).put(StructureGenerator.PILLAGER_OUTPOST, new StructureSettingsFeature(32, 8, 165745296)).put(StructureGenerator.STRONGHOLD, new StructureSettingsFeature(1, 0, 0)).put(StructureGenerator.MONUMENT, new StructureSettingsFeature(32, 5, 10387313)).put(StructureGenerator.ENDCITY, new StructureSettingsFeature(20, 11, 10387313)).put(StructureGenerator.MANSION, new StructureSettingsFeature(80, 20, 10387319)).put(StructureGenerator.BURIED_TREASURE, new StructureSettingsFeature(1, 0, 0)).put(StructureGenerator.MINESHAFT, new StructureSettingsFeature(1, 0, 0)).put(StructureGenerator.RUINED_PORTAL, new StructureSettingsFeature(40, 15, 34222645)).put(StructureGenerator.SHIPWRECK, new StructureSettingsFeature(24, 4, 165745295)).put(StructureGenerator.OCEAN_RUIN, new StructureSettingsFeature(20, 8, 14357621)).put(StructureGenerator.BASTION_REMNANT, new StructureSettingsFeature(27, 4, 30084232)).put(StructureGenerator.FORTRESS, new StructureSettingsFeature(27, 4, 30084232)).put(StructureGenerator.NETHER_FOSSIL, new StructureSettingsFeature(2, 1, 14357921)).build();
++    public static final StructureSettingsStronghold c;
++    private final Map<StructureGenerator<?>, StructureSettingsFeature> d;
++    @Nullable
++    private final StructureSettingsStronghold e;
++
++    public StructureSettings(Optional<StructureSettingsStronghold> optional, Map<StructureGenerator<?>, StructureSettingsFeature> map) {
++        this.e = (StructureSettingsStronghold) optional.orElse(null);
++        this.d = map;
++    }
++
++    public StructureSettings(boolean flag) {
++        this.d = Maps.newHashMap(StructureSettings.b);
++        this.e = flag ? StructureSettings.c : null;
++    }
++
++    public Map<StructureGenerator<?>, StructureSettingsFeature> a() {
++        return this.d;
++    }
++
++    @Nullable
++    public StructureSettingsFeature a(StructureGenerator<?> structuregenerator) {
++        return (StructureSettingsFeature) this.d.get(structuregenerator);
++    }
++
++    @Nullable
++    public StructureSettingsStronghold b() {
++        return this.e;
++    }
++
++    static {
++        c = new StructureSettingsStronghold(32, 3, 128);
++
++        for (StructureGenerator<?> var1 : IRegistry.STRUCTURE_FEATURE) {
++            if (!b.containsKey(var1)) {
++                throw new IllegalStateException("Structure feature without default settings: " + IRegistry.STRUCTURE_FEATURE.getKey(var1));
++            }
++        }
 +    }
 +}
 diff --git a/src/main/java/net/minecraft/server/TileEntitySkull.java b/src/main/java/net/minecraft/server/TileEntitySkull.java
@@ -3657,6 +3815,363 @@ index 000000000..6cc7519d9
 +            }
 +        } else {
 +            return gameprofile;
++        }
++    }
++}
+diff --git a/src/main/java/net/minecraft/server/UserCache.java b/src/main/java/net/minecraft/server/UserCache.java
+new file mode 100644
+index 000000000..0fc4162c5
+--- /dev/null
++++ b/src/main/java/net/minecraft/server/UserCache.java
+@@ -0,0 +1,351 @@
++package net.minecraft.server;
++
++import com.google.common.collect.ImmutableList;
++import com.google.common.collect.Lists;
++import com.google.common.collect.Maps;
++import com.google.common.io.Files;
++import com.google.gson.Gson;
++import com.google.gson.GsonBuilder;
++import com.google.gson.JsonArray;
++import com.google.gson.JsonElement;
++import com.google.gson.JsonObject;
++import com.google.gson.JsonParseException;
++import com.mojang.authlib.Agent;
++import com.mojang.authlib.GameProfile;
++import com.mojang.authlib.GameProfileRepository;
++import com.mojang.authlib.ProfileLookupCallback;
++import java.io.BufferedReader;
++import java.io.BufferedWriter;
++import java.io.File;
++import java.io.FileNotFoundException;
++import java.io.IOException;
++import java.nio.charset.StandardCharsets;
++import java.text.DateFormat;
++import java.text.ParseException;
++import java.text.SimpleDateFormat;
++import java.util.ArrayList;
++import java.util.Calendar;
++import java.util.Comparator;
++import java.util.Date;
++import java.util.List;
++import java.util.Locale;
++import java.util.Map;
++import java.util.UUID;
++import java.util.concurrent.atomic.AtomicLong;
++import java.util.concurrent.atomic.AtomicReference;
++import java.util.stream.Stream;
++import javax.annotation.Nullable;
++import org.apache.logging.log4j.LogManager;
++import org.apache.logging.log4j.Logger;
++
++public class UserCache {
++
++    private static final Logger LOGGER = LogManager.getLogger();
++    private static boolean b;
++    private final Map<String, UserCache.UserCacheEntry> c = Maps.newConcurrentMap();
++    private final Map<UUID, UserCache.UserCacheEntry> d = Maps.newConcurrentMap();
++    private final GameProfileRepository e;
++    private final Gson f = (new GsonBuilder()).create();
++    private final File g;
++    private final AtomicLong h = new AtomicLong();
++
++    public UserCache(GameProfileRepository gameprofilerepository, File file) {
++        this.e = gameprofilerepository;
++        this.g = file;
++        Lists.reverse(this.a()).forEach(this::a);
++    }
++
++    private void a(UserCache.UserCacheEntry usercache_usercacheentry) {
++        GameProfile gameprofile = usercache_usercacheentry.a();
++
++        usercache_usercacheentry.a(this.d());
++        String s = gameprofile.getName();
++
++        if (s != null) {
++            this.c.put(s.toLowerCase(Locale.ROOT), usercache_usercacheentry);
++        }
++
++        UUID uuid = gameprofile.getId();
++
++        if (uuid != null) {
++            this.d.put(uuid, usercache_usercacheentry);
++        }
++
++    }
++
++    @Nullable
++    private static GameProfile a(GameProfileRepository gameprofilerepository, String s) {
++        final AtomicReference<GameProfile> atomicreference = new AtomicReference();
++        ProfileLookupCallback profilelookupcallback = new ProfileLookupCallback() {
++            public void onProfileLookupSucceeded(GameProfile gameprofile) {
++                atomicreference.set(gameprofile);
++            }
++
++            public void onProfileLookupFailed(GameProfile gameprofile, Exception exception) {
++                atomicreference.set(null);
++            }
++        };
++
++        gameprofilerepository.findProfilesByNames(new String[]{s}, Agent.MINECRAFT, profilelookupcallback);
++        GameProfile gameprofile = (GameProfile) atomicreference.get();
++
++        if (!c() && gameprofile == null) {
++            UUID uuid = EntityHuman.a(new GameProfile((UUID) null, s));
++
++            gameprofile = new GameProfile(uuid, s);
++        }
++
++        return gameprofile;
++    }
++
++    public static void a(boolean flag) {
++        UserCache.b = flag;
++    }
++
++    private static boolean c() {
++        return UserCache.b;
++    }
++
++    public void a(GameProfile gameprofile) {
++        Calendar calendar = Calendar.getInstance();
++
++        calendar.setTime(new Date());
++        calendar.add(2, 1);
++        Date date = calendar.getTime();
++        UserCache.UserCacheEntry usercache_usercacheentry = new UserCache.UserCacheEntry(gameprofile, date);
++
++        this.a(usercache_usercacheentry);
++        this.b();
++    }
++
++    private long d() {
++        return this.h.incrementAndGet();
++    }
++
++    @Nullable
++    public GameProfile getProfile(String s) {
++        String s1 = s.toLowerCase(Locale.ROOT);
++        UserCache.UserCacheEntry usercache_usercacheentry = (UserCache.UserCacheEntry) this.c.get(s1);
++        boolean flag = false;
++
++        if (usercache_usercacheentry != null && (new Date()).getTime() >= usercache_usercacheentry.b.getTime()) {
++            this.d.remove(usercache_usercacheentry.a().getId());
++            this.c.remove(usercache_usercacheentry.a().getName().toLowerCase(Locale.ROOT));
++            flag = true;
++            usercache_usercacheentry = null;
++        }
++
++        GameProfile gameprofile;
++
++        if (usercache_usercacheentry != null) {
++            usercache_usercacheentry.a(this.d());
++            gameprofile = usercache_usercacheentry.a();
++        } else {
++            gameprofile = a(this.e, s1);
++            if (gameprofile != null) {
++                this.a(gameprofile);
++                flag = false;
++            }
++        }
++
++        if (flag) {
++            this.b();
++        }
++
++        return gameprofile;
++    }
++
++    @Nullable
++    public GameProfile getProfile(UUID uuid) {
++        UserCache.UserCacheEntry usercache_usercacheentry = (UserCache.UserCacheEntry) this.d.get(uuid);
++
++        if (usercache_usercacheentry == null) {
++            return null;
++        } else {
++            usercache_usercacheentry.a(this.d());
++            return usercache_usercacheentry.a();
++        }
++    }
++
++    private static DateFormat e() {
++        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
++    }
++
++    public List<UserCache.UserCacheEntry> a() {
++        ArrayList arraylist = Lists.newArrayList();
++
++        try {
++            BufferedReader bufferedreader = Files.newReader(this.g, StandardCharsets.UTF_8);
++            Throwable throwable = null;
++
++            ArrayList arraylist1;
++
++            try {
++                JsonArray jsonarray = (JsonArray) this.f.fromJson(bufferedreader, JsonArray.class);
++
++                if (jsonarray != null) {
++                    DateFormat dateformat = e();
++
++                    jsonarray.forEach((jsonelement) -> {
++                        UserCache.UserCacheEntry usercache_usercacheentry = a(jsonelement, dateformat);
++
++                        if (usercache_usercacheentry != null) {
++                            arraylist.add(usercache_usercacheentry);
++                        }
++
++                    });
++                    return arraylist;
++                }
++
++                arraylist1 = arraylist;
++            } catch (Throwable throwable1) {
++                throwable = throwable1;
++                throw throwable1;
++            } finally {
++                if (bufferedreader != null) {
++                    if (throwable != null) {
++                        try {
++                            bufferedreader.close();
++                        } catch (Throwable throwable2) {
++                            throwable.addSuppressed(throwable2);
++                        }
++                    } else {
++                        bufferedreader.close();
++                    }
++                }
++
++            }
++
++            return arraylist1;
++        } catch (FileNotFoundException filenotfoundexception) {
++            ;
++        } catch (JsonParseException | IOException ioexception) {
++            UserCache.LOGGER.warn("Failed to load profile cache {}", this.g, ioexception);
++        }
++
++        return arraylist;
++    }
++
++    public void b() {
++        JsonArray jsonarray = new JsonArray();
++        DateFormat dateformat = e();
++
++        this.a(1000).forEach((usercache_usercacheentry) -> {
++            jsonarray.add(a(usercache_usercacheentry, dateformat));
++        });
++        String s = this.f.toJson(jsonarray);
++
++        try {
++            BufferedWriter bufferedwriter = Files.newWriter(this.g, StandardCharsets.UTF_8);
++            Throwable throwable = null;
++
++            try {
++                bufferedwriter.write(s);
++            } catch (Throwable throwable1) {
++                throwable = throwable1;
++                throw throwable1;
++            } finally {
++                if (bufferedwriter != null) {
++                    if (throwable != null) {
++                        try {
++                            bufferedwriter.close();
++                        } catch (Throwable throwable2) {
++                            throwable.addSuppressed(throwable2);
++                        }
++                    } else {
++                        bufferedwriter.close();
++                    }
++                }
++
++            }
++        } catch (IOException ioexception) {
++            ;
++        }
++
++    }
++
++    private Stream<UserCache.UserCacheEntry> a(int i) {
++        return ImmutableList.copyOf(this.d.values()).stream().sorted(Comparator.comparing(UserCache.UserCacheEntry::c).reversed()).limit((long) i);
++    }
++
++    private static JsonElement a(UserCache.UserCacheEntry usercache_usercacheentry, DateFormat dateformat) {
++        JsonObject jsonobject = new JsonObject();
++
++        jsonobject.addProperty("name", usercache_usercacheentry.a().getName());
++        UUID uuid = usercache_usercacheentry.a().getId();
++
++        jsonobject.addProperty("uuid", uuid == null ? "" : uuid.toString());
++        jsonobject.addProperty("expiresOn", dateformat.format(usercache_usercacheentry.b()));
++        return jsonobject;
++    }
++
++    @Nullable
++    private static UserCache.UserCacheEntry a(JsonElement jsonelement, DateFormat dateformat) {
++        if (jsonelement.isJsonObject()) {
++            JsonObject jsonobject = jsonelement.getAsJsonObject();
++            JsonElement jsonelement1 = jsonobject.get("name");
++            JsonElement jsonelement2 = jsonobject.get("uuid");
++            JsonElement jsonelement3 = jsonobject.get("expiresOn");
++
++            if (jsonelement1 != null && jsonelement2 != null) {
++                String s = jsonelement2.getAsString();
++                String s1 = jsonelement1.getAsString();
++                Date date = null;
++
++                if (jsonelement3 != null) {
++                    try {
++                        date = dateformat.parse(jsonelement3.getAsString());
++                    } catch (ParseException parseexception) {
++                        ;
++                    }
++                }
++
++                if (s1 != null && s != null && date != null) {
++                    UUID uuid;
++
++                    try {
++                        uuid = UUID.fromString(s);
++                    } catch (Throwable throwable) {
++                        return null;
++                    }
++
++                    return new UserCache.UserCacheEntry(new GameProfile(uuid, s1), date);
++                } else {
++                    return null;
++                }
++            } else {
++                return null;
++            }
++        } else {
++            return null;
++        }
++    }
++
++    static class UserCacheEntry {
++
++        private final GameProfile a;
++        private final Date b;
++        private volatile long c;
++
++        private UserCacheEntry(GameProfile gameprofile, Date date) {
++            this.a = gameprofile;
++            this.b = date;
++        }
++
++        public GameProfile a() {
++            return this.a;
++        }
++
++        public Date b() {
++            return this.b;
++        }
++
++        public void a(long i) {
++            this.c = i;
++        }
++
++        public long c() {
++            return this.c;
 +        }
 +    }
 +}

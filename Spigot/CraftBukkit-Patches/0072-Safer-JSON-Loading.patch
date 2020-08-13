@@ -1,4 +1,4 @@
-From 86692a83543e1072622de9c65db76c530a474305 Mon Sep 17 00:00:00 2001
+From 3c564967ace3b9cce8d71598b3a1d390f66f41db Mon Sep 17 00:00:00 2001
 From: Suddenly <suddenly@suddenly.coffee>
 Date: Tue, 8 Jul 2014 09:44:18 +1000
 Subject: [PATCH] Safer JSON Loading
@@ -24,21 +24,21 @@ index 13b32a9ae..5b01e4edb 100644
                  throwable = throwable1;
                  throw throwable1;
 diff --git a/src/main/java/net/minecraft/server/UserCache.java b/src/main/java/net/minecraft/server/UserCache.java
-index 31f8000a7..b21160999 100644
+index 04a6bf30b..ce81aaf3e 100644
 --- a/src/main/java/net/minecraft/server/UserCache.java
 +++ b/src/main/java/net/minecraft/server/UserCache.java
-@@ -196,6 +196,11 @@ public class UserCache {
-             }
+@@ -219,6 +219,11 @@ public class UserCache {
+             return arraylist1;
          } catch (FileNotFoundException filenotfoundexception) {
              ;
 +        // Spigot Start
 +        } catch (com.google.gson.JsonSyntaxException ex) {
 +            JsonList.LOGGER.warn( "Usercache.json is corrupted or has bad formatting. Deleting it to prevent further issues." );
-+            this.h.delete();
++            this.g.delete();
 +        // Spigot End
-         } catch (JsonParseException jsonparseexception) {
-             ;
-         } finally {
+         } catch (JsonParseException | IOException ioexception) {
+             UserCache.LOGGER.warn("Failed to load profile cache {}", this.g, ioexception);
+         }
 -- 
 2.25.1
 

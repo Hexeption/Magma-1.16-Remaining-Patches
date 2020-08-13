@@ -155,6 +155,8 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
                     .put(CraftMetaTropicalFishBucket.class, "TROPICAL_FISH_BUCKET")
                     .put(CraftMetaCrossbow.class, "CROSSBOW")
                     .put(CraftMetaSuspiciousStew.class, "SUSPICIOUS_STEW")
+                    .put(CraftMetaEntityTag.class, "ENTITY_TAG")
+                    .put(CraftMetaCompass.class, "COMPASS")
                     .put(CraftMetaItem.class, "UNSPECIFIC")
                     .build();
 
@@ -758,7 +760,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
 
     @Override
     public final void setDisplayName(String name) {
-        this.displayName = CraftChatMessage.wrapOrNull(name);
+        this.displayName = CraftChatMessage.fromStringOrNull(name);
     }
 
     @Override
@@ -773,7 +775,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
 
     @Override
     public void setLocalizedName(String name) {
-        this.locName = CraftChatMessage.wrapOrNull(name);
+        this.locName = CraftChatMessage.fromStringOrNull(name);
     }
 
     @Override
@@ -1338,7 +1340,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
                     page = page.substring(0, maxItemLength);
                 }
 
-                addTo.add(CraftChatMessage.wrapOrEmpty(page));
+                addTo.add(CraftChatMessage.fromString(page)[0]);
             }
         }
     }
@@ -1413,7 +1415,10 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
                         CraftMetaTropicalFishBucket.VARIANT.NBT,
                         CraftMetaCrossbow.CHARGED.NBT,
                         CraftMetaCrossbow.CHARGED_PROJECTILES.NBT,
-                        CraftMetaSuspiciousStew.EFFECTS.NBT
+                        CraftMetaSuspiciousStew.EFFECTS.NBT,
+                        CraftMetaCompass.LODESTONE_DIMENSION.NBT,
+                        CraftMetaCompass.LODESTONE_POS.NBT,
+                        CraftMetaCompass.LODESTONE_TRACKED.NBT
                 ));
             }
             return HANDLED_TAGS;

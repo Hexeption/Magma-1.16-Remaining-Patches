@@ -61,7 +61,7 @@
 +                       This is to prevent them being corrupted with the wrong map data. */
 +                    // PAIL: Use Vanilla exception handling for now
 +                } else {
-+                    return world.getHandle().func_234923_W_();
++                    return world.getHandle().getDimensionKey();
 +                }
 +            }
 +            throw new IllegalArgumentException("Invalid map dimension: " + nbttagcompound.get("dimension"));
@@ -86,7 +86,7 @@
 +            if (this.uniqueId == null) {
 +                for (org.bukkit.World world : server.getWorlds()) {
 +                    CraftWorld cWorld = (CraftWorld) world;
-+                    if (cWorld.getHandle().func_234923_W_() == this.map) {
++                    if (cWorld.getHandle().getDimensionKey() == this.map) {
 +                        this.uniqueId = cWorld.getUID();
 +                        break;
 +                    }

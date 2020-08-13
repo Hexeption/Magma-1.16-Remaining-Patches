@@ -1,4 +1,4 @@
-From b81c878d47070cfbc8e13b3efb7cc6082928b05a Mon Sep 17 00:00:00 2001
+From 2f9009ec57212de51e0a18f99bd654e435b5a501 Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Sun, 7 Jul 2013 09:32:53 +1000
 Subject: [PATCH] Spigot Configuration
@@ -6,7 +6,7 @@ Subject: [PATCH] Spigot Configuration
 Provides the basic infrastructure to load and save the Spigot configuration file, spigot.yml
 
 diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index af3a85832..f49d8a741 100644
+index 1317dd5cf..5882ab98a 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServer.java
 @@ -142,6 +142,11 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
@@ -31,30 +31,30 @@ index af3a85832..f49d8a741 100644
          server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.STARTUP);
          // CraftBukkit end
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 7150db8e8..4e59f1cde 100644
+index 036ddb6d1..4b67936b1 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -73,6 +73,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
-     public long ticksPerWaterSpawns;
+@@ -74,6 +74,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+     public long ticksPerWaterAmbientSpawns;
      public long ticksPerAmbientSpawns;
      public boolean populating;
 +    public final org.spigotmc.SpigotWorldConfig spigotConfig; // Spigot
  
      public CraftWorld getWorld() {
          return this.world;
-@@ -83,6 +84,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
+@@ -88,6 +89,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
      }
  
-     protected World(WorldDataMutable worlddatamutable, ResourceKey<World> resourcekey, ResourceKey<DimensionManager> resourcekey1, DimensionManager dimensionmanager, Supplier<GameProfilerFiller> supplier, boolean flag, boolean flag1, long i, org.bukkit.generator.ChunkGenerator gen, org.bukkit.World.Environment env) {
+     protected World(WorldDataMutable worlddatamutable, ResourceKey<World> resourcekey, final DimensionManager dimensionmanager, Supplier<GameProfilerFiller> supplier, boolean flag, boolean flag1, long i, org.bukkit.generator.ChunkGenerator gen, org.bukkit.World.Environment env) {
 +        this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((WorldDataServer) worlddatamutable).getName()); // Spigot
          this.generator = gen;
          this.world = new CraftWorld((WorldServer) this, gen, env);
          this.ticksPerAnimalSpawns = this.getServer().getTicksPerAnimalSpawns(); // CraftBukkit
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index bff74ee1d..8c144f277 100644
+index 65b12b46b..41f51a989 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -770,6 +770,7 @@ public final class CraftServer implements Server {
+@@ -780,6 +780,7 @@ public final class CraftServer implements Server {
              logger.log(Level.WARNING, "Failed to load banned-players.json, " + ex.getMessage());
          }
  
@@ -62,7 +62,7 @@ index bff74ee1d..8c144f277 100644
          for (WorldServer world : console.getWorlds()) {
              world.worldDataServer.setDifficulty(config.difficulty);
              world.setSpawnFlags(config.spawnMonsters, config.spawnAnimals);
-@@ -796,12 +797,14 @@ public final class CraftServer implements Server {
+@@ -812,12 +813,14 @@ public final class CraftServer implements Server {
              } else {
                  world.ticksPerAmbientSpawns = this.getTicksPerAmbientSpawns();
              }
@@ -78,7 +78,7 @@ index bff74ee1d..8c144f277 100644
          ignoreVanillaPermissions = commandsConfiguration.getBoolean("ignore-vanilla-permissions");
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index d1c2fe153..4ac80c20b 100644
+index 6ca11fdce..8c1f905ca 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -121,6 +121,14 @@ public class Main {

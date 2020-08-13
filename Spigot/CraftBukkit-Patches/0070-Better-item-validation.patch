@@ -1,14 +1,14 @@
-From 3cb490bfdf90069cdd615c78b4f1d9dbb548fc8d Mon Sep 17 00:00:00 2001
+From 144f938e0e94a3aab8de7733b5e343dcfa7de532 Mon Sep 17 00:00:00 2001
 From: Thinkofdeath <thinkofdeath@spigotmc.org>
 Date: Wed, 2 Jul 2014 23:35:51 +0100
 Subject: [PATCH] Better item validation
 
 
 diff --git a/src/main/java/net/minecraft/server/PacketDataSerializer.java b/src/main/java/net/minecraft/server/PacketDataSerializer.java
-index a2fe489bd..f574a28b6 100644
+index a6397a585..1b9b0d98c 100644
 --- a/src/main/java/net/minecraft/server/PacketDataSerializer.java
 +++ b/src/main/java/net/minecraft/server/PacketDataSerializer.java
-@@ -271,6 +271,10 @@ public class PacketDataSerializer extends ByteBuf {
+@@ -281,6 +281,10 @@ public class PacketDataSerializer extends ByteBuf {
              NBTTagCompound nbttagcompound = null;
  
              if (item.usesDurability() || item.n()) {
@@ -20,7 +20,7 @@ index a2fe489bd..f574a28b6 100644
              }
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBook.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBook.java
-index b8f1c64f4..456ee64ed 100644
+index d32afdd96..48ae99e14 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBook.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaBook.java
 @@ -18,6 +18,10 @@ import org.bukkit.craftbukkit.util.CraftChatMessage;
@@ -39,12 +39,12 @@ index b8f1c64f4..456ee64ed 100644
  
          if (tag.hasKey(BOOK_TITLE.NBT)) {
 -            this.title = tag.getString(BOOK_TITLE.NBT);
-+            this.title = limit( tag.getString(BOOK_TITLE.NBT), 1024 ); // Spigot
++            this.title = limit( tag.getString(BOOK_TITLE.NBT), 8192 ); // Spigot
          }
  
          if (tag.hasKey(BOOK_AUTHOR.NBT)) {
 -            this.author = tag.getString(BOOK_AUTHOR.NBT);
-+            this.author = limit( tag.getString(BOOK_AUTHOR.NBT), 1024 ); // Spigot
++            this.author = limit( tag.getString(BOOK_AUTHOR.NBT), 8192 ); // Spigot
          }
  
          boolean resolved = false;
@@ -53,12 +53,12 @@ index b8f1c64f4..456ee64ed 100644
                      }
                  }
 -                addPage(page);
-+                addPage( limit( page, 2048 ) ); // Spigot
++                addPage( limit( page, 16384 ) ); // Spigot
              }
          }
      }
 diff --git a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java
-index c4d5bc21e..de874c248 100644
+index 340ad1809..c9516a77e 100644
 --- a/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java
 +++ b/src/main/java/org/bukkit/craftbukkit/inventory/CraftMetaItem.java
 @@ -78,6 +78,10 @@ import org.bukkit.inventory.meta.Repairable;
@@ -72,25 +72,25 @@ index c4d5bc21e..de874c248 100644
  /**
   * Children must include the following:
   *
-@@ -325,7 +329,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
+@@ -327,7 +331,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
  
              if (display.hasKey(NAME.NBT)) {
                  try {
 -                    displayName = IChatBaseComponent.ChatSerializer.a(display.getString(NAME.NBT));
-+                    displayName = IChatBaseComponent.ChatSerializer.a( limit( display.getString(NAME.NBT), 1024 ) ); // Spigot
++                    displayName = IChatBaseComponent.ChatSerializer.a( limit( display.getString(NAME.NBT), 8192 ) ); // Spigot
                  } catch (JsonParseException ex) {
                      // Ignore (stripped like Vanilla)
                  }
-@@ -333,7 +337,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
+@@ -335,7 +339,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
  
              if (display.hasKey(LOCNAME.NBT)) {
                  try {
 -                    locName = IChatBaseComponent.ChatSerializer.a(display.getString(LOCNAME.NBT));
-+                    locName = IChatBaseComponent.ChatSerializer.a( limit( display.getString(LOCNAME.NBT), 1024 ) ); // Spigot
++                    locName = IChatBaseComponent.ChatSerializer.a( limit( display.getString(LOCNAME.NBT), 8192 ) ); // Spigot
                  } catch (JsonParseException ex) {
                      // Ignore (stripped like Vanilla)
                  }
-@@ -344,7 +348,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
+@@ -346,7 +350,7 @@ class CraftMetaItem implements ItemMeta, Damageable, Repairable, BlockDataMeta {
                  lore = new ArrayList<IChatBaseComponent>(list.size());
  
                  for (int index = 0; index < list.size(); index++) {

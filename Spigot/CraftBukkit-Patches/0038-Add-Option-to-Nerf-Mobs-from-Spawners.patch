@@ -1,26 +1,26 @@
-From e39c3f6792fe9872fb6d61407558e173272df064 Mon Sep 17 00:00:00 2001
+From 3f1e409b80fd6727485e26eae146554fd6f0f0bb Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Sun, 2 Feb 2014 16:55:46 +0000
 Subject: [PATCH] Add Option to Nerf Mobs from Spawners
 
 
 diff --git a/src/main/java/net/minecraft/server/MobSpawnerAbstract.java b/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
-index 4a73f9b68..0bd686ee2 100644
+index c5913cd94..571a8fa5a 100644
 --- a/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
 +++ b/src/main/java/net/minecraft/server/MobSpawnerAbstract.java
-@@ -128,6 +128,12 @@ public abstract class MobSpawnerAbstract {
-                             if (this.spawnData.getEntity().e() == 1 && this.spawnData.getEntity().hasKeyOfType("id", 8)) {
-                                 ((EntityInsentient) entity).prepare(world, world.getDamageScaler(entity.getChunkCoordinates()), EnumMobSpawn.SPAWNER, (GroupDataEntity) null, (NBTTagCompound) null);
+@@ -131,6 +131,12 @@ public abstract class MobSpawnerAbstract {
+                                 if (this.spawnData.getEntity().e() == 1 && this.spawnData.getEntity().hasKeyOfType("id", 8)) {
+                                     ((EntityInsentient) entity).prepare(worldserver, world.getDamageScaler(entity.getChunkCoordinates()), EnumMobSpawn.SPAWNER, (GroupDataEntity) null, (NBTTagCompound) null);
+                                 }
++                                // Spigot Start
++                                if ( entityinsentient.world.spigotConfig.nerfSpawnerMobs )
++                                {
++                                    entityinsentient.aware = false;
++                                }
++                                // Spigot End
                              }
-+                            // Spigot Start
-+                            if ( entityinsentient.world.spigotConfig.nerfSpawnerMobs )
-+                            {
-+                                entityinsentient.aware = false;
-+                            }
-+                            // Spigot End
-                         }
  
-                         this.a(entity);
+                             if (!worldserver.addAllEntitiesSafely(entity, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.SPAWNER)) { // CraftBukkit
 diff --git a/src/main/java/org/spigotmc/SpigotWorldConfig.java b/src/main/java/org/spigotmc/SpigotWorldConfig.java
 index d8678f2c1..87adb772f 100644
 --- a/src/main/java/org/spigotmc/SpigotWorldConfig.java
