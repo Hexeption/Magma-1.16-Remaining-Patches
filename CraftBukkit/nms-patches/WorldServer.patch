@@ -130,7 +130,7 @@
  
 +        /* CraftBukkit start
          if (this.lastRainLevel != this.rainLevel) {
-             this.server.getPlayerList().a((Packet) (new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.h, this.rainLevel)), this.getDimensionKey());
+             this.server.getPlayerList().a((Packet) (new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.h, this.rainLevel)), this.func_234923_W_());
          }
 @@ -207,18 +276,47 @@
              this.server.getPlayerList().sendAll(new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.h, this.rainLevel));

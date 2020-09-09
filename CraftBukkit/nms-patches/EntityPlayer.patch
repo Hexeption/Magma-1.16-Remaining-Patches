@@ -121,7 +121,7 @@
 +        String spawnWorld = nbttagcompound.getString("SpawnWorld");
 +        CraftWorld oldWorld = (CraftWorld) Bukkit.getWorld(spawnWorld);
 +        if (oldWorld != null) {
-+            this.spawnDimension = oldWorld.getHandle().getDimensionKey();
++            this.spawnDimension = oldWorld.getHandle().func_234923_W_();
 +        }
 +        // CraftBukkit end
 +
@@ -365,7 +365,7 @@
      protected ShapeDetectorShape a(WorldServer worldserver) {
          ShapeDetectorShape shapedetectorshape = super.a(worldserver);
  
--        if (shapedetectorshape != null && this.world.getDimensionKey() == World.OVERWORLD && worldserver.getDimensionKey() == World.THE_END) {
+-        if (shapedetectorshape != null && this.world.func_234923_W_() == World.OVERWORLD && worldserver.func_234923_W_() == World.THE_END) {
 +        if (shapedetectorshape != null && this.world.getTypeKey() == DimensionManager.OVERWORLD && worldserver != null && worldserver.getTypeKey() == DimensionManager.THE_END) { // CraftBukkit
              Vec3D vec3d = shapedetectorshape.position.add(0.0D, -1.0D, 0.0D);
  
@@ -389,10 +389,10 @@
 +        if (this.isSleeping()) return this; // CraftBukkit - SPIGOT-3154
 +        // this.worldChangeInvuln = true; // CraftBukkit - Moved down and into PlayerList#changeDimension
          WorldServer worldserver1 = this.getWorldServer();
--        ResourceKey<World> resourcekey = worldserver1.getDimensionKey();
+-        ResourceKey<World> resourcekey = worldserver1.func_234923_W_();
 +        ResourceKey<DimensionManager> resourcekey = worldserver1.getTypeKey(); // CraftBukkit
  
--        if (resourcekey == World.THE_END && worldserver.getDimensionKey() == World.OVERWORLD) {
+-        if (resourcekey == World.THE_END && worldserver.func_234923_W_() == World.OVERWORLD) {
 +        if (resourcekey == DimensionManager.THE_END && worldserver != null && worldserver.getTypeKey() == DimensionManager.OVERWORLD) { // CraftBukkit
 +            this.worldChangeInvuln = true; // CraftBukkit - Moved down from above
              this.decouple();
@@ -406,7 +406,7 @@
 +            /*
              WorldData worlddata = worldserver.getWorldData();
  
-             this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.getDimensionManager(), worldserver.getDimensionKey(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
+             this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.getDimensionManager(), worldserver.func_234923_W_(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
 @@ -575,22 +780,65 @@
              playerlist.d(this);
              worldserver1.removePlayer(this);
@@ -417,12 +417,12 @@
  
              if (shapedetectorshape != null) {
                  worldserver1.getMethodProfiler().enter("moving");
--                if (resourcekey == World.OVERWORLD && worldserver.getDimensionKey() == World.THE_NETHER) {
+-                if (resourcekey == World.OVERWORLD && worldserver.func_234923_W_() == World.THE_NETHER) {
 +                worldserver = shapedetectorshape.world; // CraftBukkit
 +                if (worldserver == null) { } else // CraftBukkit - empty to fall through to null to event
 +                if (resourcekey == DimensionManager.OVERWORLD && worldserver.getTypeKey() == DimensionManager.THE_NETHER) { // CraftBukkit
                      this.ci = this.getPositionVector();
--                } else if (worldserver.getDimensionKey() == World.THE_END) {
+-                } else if (worldserver.func_234923_W_() == World.THE_END) {
 +                } else if (worldserver.getTypeKey() == DimensionManager.THE_END) { // CraftBukkit
                      this.a(worldserver, new BlockPosition(shapedetectorshape.position));
                  }
@@ -461,7 +461,7 @@
 +            if (true) { // CraftBukkit
 +                this.worldChangeInvuln = true; // CraftBukkit - Set teleport invulnerability only if player changing worlds
 +
-+                this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.getDimensionManager(), worldserver.getDimensionKey(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
++                this.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver.getDimensionManager(), worldserver.func_234923_W_(), BiomeManager.a(worldserver.getSeed()), this.playerInteractManager.getGameMode(), this.playerInteractManager.c(), worldserver.isDebugWorld(), worldserver.isFlatWorld(), true));
 +                this.playerConnection.sendPacket(new PacketPlayOutServerDifficulty(this.world.getDifficulty(), this.world.getWorldData().isDifficultyLocked()));
 +                PlayerList playerlist = this.server.getPlayerList();
 +

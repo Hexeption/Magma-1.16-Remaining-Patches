@@ -100,7 +100,7 @@
 @@ -109,6 +149,7 @@
          boolean flag1 = gamerules.getBoolean(GameRules.REDUCED_DEBUG_INFO);
  
-         playerconnection.sendPacket(new PacketPlayOutLogin(entityplayer.getId(), entityplayer.playerInteractManager.getGameMode(), entityplayer.playerInteractManager.c(), BiomeManager.a(worldserver1.getSeed()), worlddata.isHardcore(), this.server.F(), this.s, worldserver1.getDimensionManager(), worldserver1.getDimensionKey(), this.getMaxPlayers(), this.viewDistance, flag1, !flag, worldserver1.isDebugWorld(), worldserver1.isFlatWorld()));
+         playerconnection.sendPacket(new PacketPlayOutLogin(entityplayer.getId(), entityplayer.playerInteractManager.getGameMode(), entityplayer.playerInteractManager.c(), BiomeManager.a(worldserver1.getSeed()), worlddata.isHardcore(), this.server.F(), this.s, worldserver1.getDimensionManager(), worldserver1.func_234923_W_(), this.getMaxPlayers(), this.viewDistance, flag1, !flag, worldserver1.isDebugWorld(), worldserver1.isFlatWorld()));
 +        entityplayer.getBukkitEntity().sendSupportedChannels(); // CraftBukkit
          playerconnection.sendPacket(new PacketPlayOutCustomPayload(PacketPlayOutCustomPayload.a, (new PacketDataSerializer(Unpooled.buffer())).a(this.getServer().getServerModName())));
          playerconnection.sendPacket(new PacketPlayOutServerDifficulty(worlddata.getDifficulty(), worlddata.isDifficultyLocked()));
@@ -474,7 +474,7 @@
  
 -                f1 = (float) MathHelper.g(MathHelper.d(vec3d1.z, vec3d1.x) * 57.2957763671875D - 90.0D);
 +                    entityplayer1.setPositionRotation(vec3d.x, vec3d.y, vec3d.z, f1, 0.0F);
-+                    entityplayer1.setRespawnPosition(worldserver1.getDimensionKey(), blockposition, f, flag1, false);
++                    entityplayer1.setRespawnPosition(worldserver1.func_234923_W_(), blockposition, f, flag1, false);
 +                    flag2 = !flag && flag3;
 +                    isBedSpawn = true;
 +                    location = new Location(worldserver1.getWorld(), vec3d.x, vec3d.y, vec3d.z);
@@ -484,7 +484,7 @@
              }
  
 -            entityplayer1.setPositionRotation(vec3d.x, vec3d.y, vec3d.z, f1, 0.0F);
--            entityplayer1.setRespawnPosition(worldserver1.getDimensionKey(), blockposition, f, flag1, false);
+-            entityplayer1.setRespawnPosition(worldserver1.func_234923_W_(), blockposition, f, flag1, false);
 -            flag2 = !flag && flag3;
 -        } else if (blockposition != null) {
 -            entityplayer1.playerConnection.sendPacket(new PacketPlayOutGameStateChange(PacketPlayOutGameStateChange.a, 0.0F));
@@ -513,7 +513,7 @@
          }
 +        // CraftBukkit start
 +        WorldData worlddata = worldserver1.getWorldData();
-+        entityplayer1.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver1.getDimensionManager(), worldserver1.getDimensionKey(), BiomeManager.a(worldserver1.getSeed()), entityplayer1.playerInteractManager.getGameMode(), entityplayer1.playerInteractManager.c(), worldserver1.isDebugWorld(), worldserver1.isFlatWorld(), flag));
++        entityplayer1.playerConnection.sendPacket(new PacketPlayOutRespawn(worldserver1.getDimensionManager(), worldserver1.func_234923_W_(), BiomeManager.a(worldserver1.getSeed()), entityplayer1.playerInteractManager.getGameMode(), entityplayer1.playerInteractManager.c(), worldserver1.isDebugWorld(), worldserver1.isFlatWorld(), flag));
 +        entityplayer1.spawnIn(worldserver1);
 +        entityplayer1.dead = false;
 +        entityplayer1.playerConnection.teleport(new Location(worldserver1.getWorld(), entityplayer1.locX(), entityplayer1.locY(), entityplayer1.locZ(), entityplayer1.yaw, entityplayer1.pitch));
@@ -521,7 +521,7 @@
  
 -        WorldData worlddata = entityplayer1.world.getWorldData();
 -
--        entityplayer1.playerConnection.sendPacket(new PacketPlayOutRespawn(entityplayer1.world.getDimensionManager(), entityplayer1.world.getDimensionKey(), BiomeManager.a(entityplayer1.getWorldServer().getSeed()), entityplayer1.playerInteractManager.getGameMode(), entityplayer1.playerInteractManager.c(), entityplayer1.getWorldServer().isDebugWorld(), entityplayer1.getWorldServer().isFlatWorld(), flag));
+-        entityplayer1.playerConnection.sendPacket(new PacketPlayOutRespawn(entityplayer1.world.getDimensionManager(), entityplayer1.world.func_234923_W_(), BiomeManager.a(entityplayer1.getWorldServer().getSeed()), entityplayer1.playerInteractManager.getGameMode(), entityplayer1.playerInteractManager.c(), entityplayer1.getWorldServer().isDebugWorld(), entityplayer1.getWorldServer().isFlatWorld(), flag));
 -        entityplayer1.playerConnection.a(entityplayer1.locX(), entityplayer1.locY(), entityplayer1.locZ(), entityplayer1.yaw, entityplayer1.pitch);
 +        // entityplayer1.playerConnection.a(entityplayer1.locX(), entityplayer1.locY(), entityplayer1.locZ(), entityplayer1.yaw, entityplayer1.pitch);
          entityplayer1.playerConnection.sendPacket(new PacketPlayOutSpawnPosition(worldserver1.getSpawn(), worldserver1.v()));
@@ -632,7 +632,7 @@
 +            }
 +            // CraftBukkit end
 +
-             if (entityplayer != entityhuman && entityplayer.world.getDimensionKey() == resourcekey) {
+             if (entityplayer != entityhuman && entityplayer.world.func_234923_W_() == resourcekey) {
                  double d4 = d0 - entityplayer.locX();
                  double d5 = d1 - entityplayer.locY();
 @@ -686,23 +963,34 @@
