@@ -1,4 +1,4 @@
-From a083b59381453d78e63b15c4a878432ae2f5dd27 Mon Sep 17 00:00:00 2001
+From abbbb5be8847bcb4de7754ef28cbcfe6f2c7ed7f Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Mon, 13 Jul 2015 19:10:15 +1000
 Subject: [PATCH] Add restart API.

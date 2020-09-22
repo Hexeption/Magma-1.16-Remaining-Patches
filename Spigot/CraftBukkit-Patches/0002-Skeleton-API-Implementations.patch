@@ -1,4 +1,4 @@
-From 71afe84bd6b7dcf5c581dd712036f88c1f741423 Mon Sep 17 00:00:00 2001
+From 0afc2cd1fab0f5f0e0570643c5fc74c5093ff962 Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Sun, 2 Jun 2013 15:10:56 +1000
 Subject: [PATCH] Skeleton API Implementations
@@ -6,10 +6,10 @@ Subject: [PATCH] Skeleton API Implementations
 This contains the basic, empty implementations for some Spigot-API extensions. They are included early in the patching progress so that compilation will still succeed midway despite the APIs only being provided by subsequent patches.
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 9c1792ef9..65b12b46b 100644
+index 1b5c92469..d5c6ecac9 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2011,4 +2011,14 @@ public final class CraftServer implements Server {
+@@ -2020,4 +2020,14 @@ public final class CraftServer implements Server {
      public UnsafeValues getUnsafe() {
          return CraftMagicNumbers.INSTANCE;
      }
@@ -25,10 +25,10 @@ index 9c1792ef9..65b12b46b 100644
 +    }
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-index 0c4ac2e71..885107674 100644
+index 571108b53..8d01bd05f 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftWorld.java
-@@ -2308,4 +2308,15 @@ public class CraftWorld implements World {
+@@ -2311,4 +2311,15 @@ public class CraftWorld implements World {
      public DragonBattle getEnderDragonBattle() {
          return (getHandle().getDragonBattle() == null) ? null : new CraftDragonBattle(getHandle().getDragonBattle());
      }
@@ -122,10 +122,10 @@ index 6c05cb414..e7e7d738e 100644
 +    // Spigot end
  }
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index e9d4b763c..0db7bd92f 100644
+index 5d3b514e1..ba70c9cd6 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -1698,4 +1698,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -1694,4 +1694,15 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
          getHandle().openBook(org.bukkit.craftbukkit.inventory.CraftItemStack.asNMSCopy(book), net.minecraft.server.EnumHand.MAIN_HAND);
          getInventory().setItemInMainHand(hand);
      }

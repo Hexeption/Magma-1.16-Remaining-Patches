@@ -1,4 +1,4 @@
-From 07a44d10c7d139d306f785d65e77bcf1a1417230 Mon Sep 17 00:00:00 2001
+From c7a60640a70ab5ca565fdb02b90ffe771bab8146 Mon Sep 17 00:00:00 2001
 From: Jonas Konrad <me@yawk.at>
 Date: Fri, 25 Apr 2014 23:46:46 +0200
 Subject: [PATCH] Fix race condition that could kill connections before they

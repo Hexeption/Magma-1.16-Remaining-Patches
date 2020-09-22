@@ -1,4 +1,4 @@
-From 2f9009ec57212de51e0a18f99bd654e435b5a501 Mon Sep 17 00:00:00 2001
+From 0a7c33b20ba9a5a05f33a1645b9fc54d087d916d Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Sun, 7 Jul 2013 09:32:53 +1000
 Subject: [PATCH] Spigot Configuration
@@ -6,32 +6,32 @@ Subject: [PATCH] Spigot Configuration
 Provides the basic infrastructure to load and save the Spigot configuration file, spigot.yml
 
 diff --git a/src/main/java/net/minecraft/server/DedicatedServer.java b/src/main/java/net/minecraft/server/DedicatedServer.java
-index 1317dd5cf..5882ab98a 100644
+index 896eca029..9f4f33634 100644
 --- a/src/main/java/net/minecraft/server/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/DedicatedServer.java
-@@ -142,6 +142,11 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+@@ -139,6 +139,11 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
              this.e(dedicatedserverproperties.preventProxyConnections);
              this.a_(dedicatedserverproperties.serverIp);
          }
 +        // Spigot start
-+        this.a((PlayerList) (new DedicatedPlayerList(this, this.f, this.worldNBTStorage)));
++        this.a((PlayerList) (new DedicatedPlayerList(this, this.customRegistry, this.worldNBTStorage)));
 +        org.spigotmc.SpigotConfig.init((java.io.File) options.valueOf("spigot-settings"));
 +        org.spigotmc.SpigotConfig.registerCommands();
 +        // Spigot end
  
          this.setPVP(dedicatedserverproperties.pvp);
          this.setAllowFlight(dedicatedserverproperties.allowFlight);
-@@ -176,7 +181,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
+@@ -173,7 +178,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
          }
  
          // CraftBukkit start
--        this.a((PlayerList) (new DedicatedPlayerList(this, this.f, this.worldNBTStorage)));
-+        // this.a((PlayerList) (new DedicatedPlayerList(this, this.f, this.worldNBTStorage))); // Spigot - moved up
+-        this.a((PlayerList) (new DedicatedPlayerList(this, this.customRegistry, this.worldNBTStorage)));
++        // this.a((PlayerList) (new DedicatedPlayerList(this, this.customRegistry, this.worldNBTStorage))); // Spigot - moved up
          server.loadPlugins();
          server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.STARTUP);
          // CraftBukkit end
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index 036ddb6d1..4b67936b1 100644
+index 7ed299a10..0ee70b468 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -74,6 +74,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
@@ -51,10 +51,10 @@ index 036ddb6d1..4b67936b1 100644
          this.world = new CraftWorld((WorldServer) this, gen, env);
          this.ticksPerAnimalSpawns = this.getServer().getTicksPerAnimalSpawns(); // CraftBukkit
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 65b12b46b..41f51a989 100644
+index d5c6ecac9..d02ba6180 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -780,6 +780,7 @@ public final class CraftServer implements Server {
+@@ -782,6 +782,7 @@ public final class CraftServer implements Server {
              logger.log(Level.WARNING, "Failed to load banned-players.json, " + ex.getMessage());
          }
  
@@ -62,7 +62,7 @@ index 65b12b46b..41f51a989 100644
          for (WorldServer world : console.getWorlds()) {
              world.worldDataServer.setDifficulty(config.difficulty);
              world.setSpawnFlags(config.spawnMonsters, config.spawnAnimals);
-@@ -812,12 +813,14 @@ public final class CraftServer implements Server {
+@@ -814,12 +815,14 @@ public final class CraftServer implements Server {
              } else {
                  world.ticksPerAmbientSpawns = this.getTicksPerAmbientSpawns();
              }
@@ -78,7 +78,7 @@ index 65b12b46b..41f51a989 100644
          ignoreVanillaPermissions = commandsConfiguration.getBoolean("ignore-vanilla-permissions");
  
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 6ca11fdce..8c1f905ca 100644
+index 17b9475b2..8a8234199 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -121,6 +121,14 @@ public class Main {

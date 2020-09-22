@@ -1,4 +1,4 @@
-From b68dc3442e0d6602f04ffa26e7e258efe29982c1 Mon Sep 17 00:00:00 2001
+From fec92e6219b89e0842d2ce69ac0b67d86965103f Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Thu, 11 Jan 2018 08:23:43 +1100
 Subject: [PATCH] Allow changing minimum squid spawn range

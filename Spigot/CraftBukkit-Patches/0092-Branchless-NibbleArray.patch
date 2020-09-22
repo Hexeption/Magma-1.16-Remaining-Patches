@@ -1,4 +1,4 @@
-From 3f90b8ab5cfc5f638a72507411f93192b4972f96 Mon Sep 17 00:00:00 2001
+From e082dee74b52e19c5f67c0cbb6ae3984e2cd7e19 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Sat, 30 Jul 2016 11:29:14 +1000
 Subject: [PATCH] Branchless NibbleArray

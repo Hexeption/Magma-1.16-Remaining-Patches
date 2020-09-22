@@ -1,4 +1,4 @@
-From 29b8d61685349ac9f0de22878d5e73ef87018655 Mon Sep 17 00:00:00 2001
+From 5b3af4c629f59e7cec7df614b140c16c3454564c Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Fri, 13 Dec 2013 11:58:58 +1100
 Subject: [PATCH] Configurable Amount of Netty Threads
@@ -6,7 +6,7 @@ Subject: [PATCH] Configurable Amount of Netty Threads
 This brings back the option that the Spigot version of netty saw. By default Netty will try and use cores*2 threads, however if running multiple servers on the same machine, this can be too many threads. Additionally some people have 16 core servers. If 32 Netty threads are allowed in this setup, then the lock contention, and thus blocking between threads becomes much greater, leading to decreased performance.
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 0cfc308eb..1fbe06ce4 100644
+index 1bf5fa342..ad94e8adf 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -190,7 +190,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas

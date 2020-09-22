@@ -1,11 +1,11 @@
-From 34cb67767c357a945fa06ea78588b09bb86bf65b Mon Sep 17 00:00:00 2001
+From 827af22212feb0ac3a3196819603a3e3b284f528 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Mon, 13 Jul 2015 19:05:15 +1000
 Subject: [PATCH] Use Map for getPlayer(String) lookup.
 
 
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 1deda6a34..65a499b35 100644
+index 4ff3f6309..35e474d07 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -73,6 +73,7 @@ public abstract class PlayerList {
@@ -40,7 +40,7 @@ index 1deda6a34..65a499b35 100644
          entityplayer.getWorldServer().removePlayer(entityplayer);
          BlockPosition blockposition = entityplayer.getSpawn();
          float f = entityplayer.getSpawnAngle();
-@@ -723,6 +727,7 @@ public abstract class PlayerList {
+@@ -722,6 +726,7 @@ public abstract class PlayerList {
          if (!entityplayer.playerConnection.isDisconnected()) {
              worldserver1.addPlayerRespawn(entityplayer1);
              this.players.add(entityplayer1);
@@ -48,7 +48,7 @@ index 1deda6a34..65a499b35 100644
              this.j.put(entityplayer1.getUniqueID(), entityplayer1);
          }
          // entityplayer1.syncInventory();
-@@ -921,19 +926,7 @@ public abstract class PlayerList {
+@@ -920,19 +925,7 @@ public abstract class PlayerList {
  
      @Nullable
      public EntityPlayer getPlayer(String s) {

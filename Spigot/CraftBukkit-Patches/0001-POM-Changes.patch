@@ -1,4 +1,4 @@
-From b749cdaf5d9258808f25bd9d95b23e9af35b8d01 Mon Sep 17 00:00:00 2001
+From 79da718da6ec03ee6e10ab609d14cde716d7e695 Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Tue, 2 Jul 2013 13:07:39 +1000
 Subject: [PATCH] POM Changes
@@ -6,7 +6,7 @@ Subject: [PATCH] POM Changes
 Basic changes to the build system which mark the artifact as Spigot, and the necessary code changes to ensure proper functionality. Also disables the auto updater provided by CraftBukkit as it is useless to us.
 
 diff --git a/pom.xml b/pom.xml
-index eb0ffbbfe..56c23681f 100644
+index 546cc7852..1374fe3d7 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1,11 +1,11 @@
@@ -18,7 +18,7 @@ index eb0ffbbfe..56c23681f 100644
 +    <groupId>org.spigotmc</groupId>
 +    <artifactId>spigot</artifactId>
      <packaging>jar</packaging>
-     <version>1.16.2-R0.1-SNAPSHOT</version>
+     <version>1.16.3-R0.1-SNAPSHOT</version>
 -    <name>CraftBukkit</name>
 +    <name>Spigot</name>
      <url>https://www.spigotmc.org/</url>
@@ -44,7 +44,7 @@ index eb0ffbbfe..56c23681f 100644
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
-@@ -104,11 +111,26 @@
+@@ -110,11 +117,26 @@
                  <groupId>net.md-5</groupId>
                  <artifactId>scriptus</artifactId>
                  <version>0.4.1</version>
@@ -74,7 +74,7 @@ index eb0ffbbfe..56c23681f 100644
                          <phase>initialize</phase>
                          <goals>
                              <goal>describe</goal>
-@@ -128,7 +150,7 @@
+@@ -134,7 +156,7 @@
                          <manifestEntries>
                              <Main-Class>org.bukkit.craftbukkit.Main</Main-Class>
                              <Implementation-Title>CraftBukkit</Implementation-Title>

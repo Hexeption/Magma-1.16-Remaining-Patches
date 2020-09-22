@@ -1,4 +1,4 @@
-From 4e483d7b670929b36d7f924583dca2ed807862a2 Mon Sep 17 00:00:00 2001
+From 03a8b7821ed8dc9719bd22d1e730016d4f94fc81 Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Fri, 21 Jun 2013 18:01:29 +1000
 Subject: [PATCH] Allow Disabling of Command Logging

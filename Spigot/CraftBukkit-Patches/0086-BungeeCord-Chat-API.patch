@@ -1,4 +1,4 @@
-From bbfb8a4334705f6367f057f8289317079f1023f0 Mon Sep 17 00:00:00 2001
+From 4c05b17ac3586e4f1e25614fde7923a4e1814fe0 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Sat, 13 Dec 2014 03:06:05 +0100
 Subject: [PATCH] BungeeCord Chat API
@@ -32,10 +32,10 @@ index 40e0ea5bc..9ae419f9a 100644
          packetdataserializer.a(this.c);
      }
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index bec73be4a..fe92eced6 100644
+index f3c95cc62..0986d666b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -222,6 +222,8 @@ import org.yaml.snakeyaml.Yaml;
+@@ -224,6 +224,8 @@ import org.yaml.snakeyaml.Yaml;
  import org.yaml.snakeyaml.constructor.SafeConstructor;
  import org.yaml.snakeyaml.error.MarkedYAMLException;
  
@@ -44,7 +44,7 @@ index bec73be4a..fe92eced6 100644
  public final class CraftServer implements Server {
      private final String serverName = "CraftBukkit";
      private final String serverVersion;
-@@ -2060,6 +2062,20 @@ public final class CraftServer implements Server {
+@@ -2069,6 +2071,20 @@ public final class CraftServer implements Server {
          public void restart() {
              org.spigotmc.RestartCommand.restart();
          }
@@ -109,7 +109,7 @@ index e0eb45f72..fc23f2c4d 100644
  
      public Spigot spigot()
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index 6e835b408..151fc711b 100644
+index d67d99bc0..1bde861af 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 @@ -122,6 +122,8 @@ import org.bukkit.plugin.Plugin;
@@ -121,7 +121,7 @@ index 6e835b408..151fc711b 100644
  @DelegateDeserialization(CraftOfflinePlayer.class)
  public class CraftPlayer extends CraftHumanEntity implements Player {
      private long firstPlayed = 0;
-@@ -1748,6 +1750,34 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -1744,6 +1746,34 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
  
              return java.util.Collections.unmodifiableSet( ret );
          }

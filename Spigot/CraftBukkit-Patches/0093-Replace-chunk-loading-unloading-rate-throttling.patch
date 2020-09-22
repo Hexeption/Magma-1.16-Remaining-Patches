@@ -1,4 +1,4 @@
-From bcc86e2af379e7854cd6f02c5b5959a33be6ea82 Mon Sep 17 00:00:00 2001
+From dd8c47f22c0cdf75d70bb740ca2b9b7b00043218 Mon Sep 17 00:00:00 2001
 From: Geoff Crossland <gcrossland+bukkit@gmail.com>
 Date: Thu, 26 Jan 2017 20:54:55 +0000
 Subject: [PATCH] Replace chunk loading / unloading rate throttling.
@@ -7,7 +7,7 @@ Uses a scheme based on estimated tick slack time.
 See https://hub.spigotmc.org/stash/projects/SPIGOT/repos/spigot/pull-requests/71/overview
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index ec85a996b..a2d8fc68e 100644
+index a01beda0e..db11a3eec 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -66,6 +66,7 @@ import org.bukkit.craftbukkit.Main;

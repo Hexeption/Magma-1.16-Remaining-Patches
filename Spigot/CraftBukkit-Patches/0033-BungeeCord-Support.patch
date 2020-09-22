@@ -1,4 +1,4 @@
-From 1a0af7ed054e124fe49d662888136b02bc434480 Mon Sep 17 00:00:00 2001
+From be333d5e9d25696652284b039fbed26d85247b07 Mon Sep 17 00:00:00 2001
 From: md_5 <md_5@live.com.au>
 Date: Sun, 1 Dec 2013 18:18:41 +1100
 Subject: [PATCH] BungeeCord Support
@@ -115,7 +115,7 @@ index 6aeea22ae..4f008e472 100644
          this.d = EnumProtocol.a(packetdataserializer.i());
      }
 diff --git a/src/main/java/net/minecraft/server/PlayerList.java b/src/main/java/net/minecraft/server/PlayerList.java
-index 9f177ccca..c799429d2 100644
+index 7be24946d..b7bde088e 100644
 --- a/src/main/java/net/minecraft/server/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/PlayerList.java
 @@ -491,7 +491,7 @@ public abstract class PlayerList {
@@ -128,10 +128,10 @@ index 9f177ccca..c799429d2 100644
          if (getProfileBans().isBanned(gameprofile) && !getProfileBans().get(gameprofile).hasExpired()) {
              GameProfileBanEntry gameprofilebanentry = (GameProfileBanEntry) this.k.get(gameprofile);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 1d06365f0..5a32dd50a 100644
+index 95d629601..3230f4ee7 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -654,7 +654,13 @@ public final class CraftServer implements Server {
+@@ -656,7 +656,13 @@ public final class CraftServer implements Server {
  
      @Override
      public long getConnectionThrottle() {
@@ -147,10 +147,10 @@ index 1d06365f0..5a32dd50a 100644
  
      @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-index de0d0e836..68a1e2d20 100644
+index d806a460d..0c5a73a37 100644
 --- a/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftPlayer.java
-@@ -1704,6 +1704,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
+@@ -1700,6 +1700,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
      private final Player.Spigot spigot = new Player.Spigot()
      {
  

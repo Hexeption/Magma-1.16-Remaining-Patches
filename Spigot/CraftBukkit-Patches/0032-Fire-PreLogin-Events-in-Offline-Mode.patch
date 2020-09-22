@@ -1,4 +1,4 @@
-From c1898066455d212482a12a39f4bfd00a757af483 Mon Sep 17 00:00:00 2001
+From 90d2a6ac10f693efa009bafad68a75c7040a3c83 Mon Sep 17 00:00:00 2001
 From: md_5 <git@md-5.net>
 Date: Wed, 18 Dec 2013 13:32:10 +1100
 Subject: [PATCH] Fire PreLogin Events in Offline Mode

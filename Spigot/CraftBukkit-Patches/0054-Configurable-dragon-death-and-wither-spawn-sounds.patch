@@ -1,4 +1,4 @@
-From 47b99f87bd23fcfcdb519c29c913e875e95261a9 Mon Sep 17 00:00:00 2001
+From ff66cfdf463b8e9e0f72f4dd3b56fa4d8b125bc7 Mon Sep 17 00:00:00 2001
 From: drXor <mcyoungsota@gmail.com>
 Date: Sat, 29 Mar 2014 13:44:25 -0400
 Subject: [PATCH] Configurable dragon death and wither spawn sounds
@@ -47,7 +47,7 @@ index 0a421a948..5fd3f79d8 100644
                              double deltaLength = Math.sqrt(distanceSquared);
                              double relativeX = player.locX() + (deltaX / deltaLength) * viewDistance;
 diff --git a/src/main/java/net/minecraft/server/ItemEnderEye.java b/src/main/java/net/minecraft/server/ItemEnderEye.java
-index d2e6caf3f..068503012 100644
+index 12b640dfc..3296d888a 100644
 --- a/src/main/java/net/minecraft/server/ItemEnderEye.java
 +++ b/src/main/java/net/minecraft/server/ItemEnderEye.java
 @@ -34,7 +34,25 @@ public class ItemEnderEye extends Item {

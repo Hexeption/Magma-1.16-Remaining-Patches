@@ -1,4 +1,4 @@
-From 24128ba75291b953360af5e972ceac2bdd70cb28 Mon Sep 17 00:00:00 2001
+From b3a67808d77c5b1d57859bd0af6288b0ae27d334 Mon Sep 17 00:00:00 2001
 From: Aikar <aikar@aikar.co>
 Date: Wed, 20 Aug 2014 18:12:32 -0400
 Subject: [PATCH] Limit TNT Detonations per tick
@@ -19,7 +19,7 @@ index c66beabc8..ea4ecd983 100644
              this.setMot(this.getMot().add(0.0D, -0.04D, 0.0D));
          }
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index dd1154f7a..f2b577830 100644
+index f46213156..4251f12e2 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
 @@ -696,6 +696,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
